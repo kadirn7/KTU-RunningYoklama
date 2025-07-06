@@ -4,58 +4,179 @@
   <meta charset="utf-8">
   <title>Kayıt Ol</title>
   <style>
-    body{font-family:Arial, sans-serif;max-width:400px;margin:60px auto;text-align:center;}
-    input,button{padding:10px;margin:8px;width:100%;box-sizing:border-box;}
-    .error{color:red;margin:5px 0;}
-    .success{color:green;margin:5px 0;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .register-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+    }
+    .register-icon {
+      font-size: 2.5rem;
+      color: #43a047;
+      margin-bottom: 16px;
+    }
+    .register-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #222;
+    }
+    .input-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      box-sizing: border-box;
+      margin-top: 6px;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #43a047;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: #2e7031;
+    }
+    .error {
+      color: #d32f2f;
+      background: #fdecea;
+      border-radius: 7px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .success {
+      color: #388e3c;
+      background: #e8f5e9;
+      border-radius: 7px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .links {
+      text-align: center;
+      margin-top: 18px;
+    }
+    .links a {
+      color: #1976d2;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>Kayıt Ol</h2>
-  
-  <form id="registerForm">
-    <input id="username" type="text" placeholder="Kullanıcı Adı" required>
-    <input id="email" type="email" placeholder="E-posta" required>
-    <input id="fullName" type="text" placeholder="Ad Soyad" required>
-    <input id="password" type="password" placeholder="Şifre (en az 6 karakter)" required>
-    <button type="submit">Kayıt Ol</button>
-  </form>
-  
-  <div id="message"></div>
-  
-  <p><a href="login.html">Zaten hesabınız var mı? Giriş yapın</a></p>
-
-<script>
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  const username = document.getElementById('username').value;
-  const email = document.getElementById('email').value;
-  const fullName = document.getElementById('fullName').value;
-  const password = document.getElementById('password').value;
-  const messageDiv = document.getElementById('message');
-  
-  try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&fullName=${encodeURIComponent(fullName)}&password=${encodeURIComponent(password)}`
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
+  <div class="register-box">
+    <div class="register-icon">📝</div>
+    <div class="register-title">Kayıt Ol</div>
+    <form id="registerForm">
+      <div class="input-group">
+        <label for="username">Kullanıcı Adı</label>
+        <input id="username" type="text" required>
+      </div>
+      <div class="input-group">
+        <label for="email">E-posta</label>
+        <input id="email" type="email" required>
+      </div>
+      <div class="input-group">
+        <label for="fullName">Ad Soyad</label>
+        <input id="fullName" type="text" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Şifre (en az 6 karakter)</label>
+        <input id="password" type="password" required>
+      </div>
+      <button type="submit" class="btn">Kayıt Ol</button>
+    </form>
+    <div id="message"></div>
+    <div class="links">
+      <a href="login.html">Zaten hesabınız var mı? Giriş yapın</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const fullName = document.getElementById('fullName').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('message');
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&fullName=${encodeURIComponent(fullName)}&password=${encodeURIComponent(password)}`
+        });
+        const data = await res.json();
+        if(res.ok){
+          messageDiv.innerHTML = '<div class="success">✅ ' + data.message + '</div>';
+          setTimeout(() => { location.href = 'login.html'; }, 2000);
+        } else {
+          messageDiv.innerHTML = '<div class="error">❌ ' + (data.message || 'Kayıt başarısız') + '</div>';
+        }
+      } catch(e) {
+        messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
+      }
     });
-    
-    const data = await res.json();
-    
-    if(res.ok){
-      messageDiv.innerHTML = '<div class="success">✅ ' + data.message + '</div>';
-      setTimeout(() => {
-        location.href = 'login.html';
-      }, 2000);
-    } else {
-      messageDiv.innerHTML = '<div class="error">❌ ' + (data.message || 'Kayıt başarısız') + '</div>';
-    }
-  } catch(e) {
-    messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
-  }
-});
-</script>
+  </script>
 </body>
 </html> 

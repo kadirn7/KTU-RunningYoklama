@@ -4,12 +4,105 @@
   <meta charset="utf-8">
   <title>Başarılı</title>
   <style>
-    body{font-family:Arial, sans-serif;max-width:400px;margin:60px auto;text-align:center;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100vw;
+      max-width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .success-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+      margin: 80px auto 0 auto;
+    }
+    .success-icon {
+      font-size: 3rem;
+      color: #34c759;
+      margin-bottom: 16px;
+    }
+    .success-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #222;
+    }
+    .success-message {
+      font-size: 1.2rem;
+      color: #222;
+      margin-bottom: 10px;
+    }
+    .motivation {
+      color: #34c759;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+    .info {
+      color: #888;
+      font-size: 0.95rem;
+      margin-top: 18px;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+      .success-box {
+        padding: 24px 8px;
+        border-radius: 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>Yoklama Alındı ✅</h2>
-  <p>Teşekkürler, yoklamanız kaydedildi.</p>
-  <a href="login.html">Yeni Giriş</a>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
+  <div class="success-box">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Yoklama Alındı</div>
+    <div class="success-message">Teşekkürler, yoklamanız kaydedildi.</div>
+    <div class="motivation">Keyifli koşular dileriz! 🏃‍♂️🏃‍♀️🎉</div>
+    <div class="info">Bu pencereyi kapatabilirsiniz.</div>
+  </div>
 </body>
 </html>

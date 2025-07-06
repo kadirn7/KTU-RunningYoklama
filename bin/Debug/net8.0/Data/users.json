@@ -28,5 +28,15 @@
     "CreatedAt": "2025-07-06T06:03:04.0622326+03:00",
     "IsActive": true,
     "Role": "User"
+  },
+  {
+    "Id": 4,
+    "Username": "Deneme",
+    "Email": "Deneme@gmail.com",
+    "PasswordHash": "nKeVv6\u002BQ40/WFMe/QBe\u002BGe6OQ8E7qp8g9JMJUjTmzIg=",
+    "FullName": "Deneme",
+    "CreatedAt": "2025-07-06T12:32:14.5007715+03:00",
+    "IsActive": true,
+    "Role": "User"
   }
 ]

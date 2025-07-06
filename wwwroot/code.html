@@ -5,30 +5,167 @@
   <title>Yoklama</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:Arial, sans-serif;background:#f7f7f7;margin:0;}
-    .container{max-width:400px;margin:60px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 2px 16px #0001;}
-    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
-    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
-    .profile-name{font-weight:bold;}
-    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
-    .logout-btn:hover{background:#c62828;}
-    h2{text-align:center;margin-bottom:32px;}
-    .input-group{margin-bottom:20px;}
-    input[type=password]{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;}
-    .submit-btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;transition:background .2s;}
-    .submit-btn:hover{background:#125ea2;}
-    .error{color:#d32f2f;text-align:center;margin-top:10px;}
-    @media (max-width:500px){.container{margin:0;padding:16px;border-radius:0;box-shadow:none;}}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100vw;
+      max-width: 100vw;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .main-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .main-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #222;
+    }
+    .main-message {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 18px;
+    }
+    .btn, .submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s;
+      margin: 18px 0 0 0;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover, .submit-btn:hover {
+      background: #125ea2;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    input[type=password] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    .profile-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      position: absolute;
+      top: 24px;
+      right: 24px;
+    }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .profile-name {
+      font-weight: bold;
+    }
+    .profile-update-btn {
+      background: #fff;
+      color: #1976d2;
+      border: 1.5px solid #1976d2;
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      margin-left: 4px;
+    }
+    .profile-update-btn:hover {
+      background: #1976d2;
+      color: #fff;
+    }
+    .logout-btn {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .logout-btn:hover {
+      background: #c62828;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+      .main-box {
+        padding: 24px 8px;
+        border-radius: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
   <div class="profile-bar" id="profileBar" style="display:none;">
     <div class="profile-pic" id="profilePic" style="cursor:pointer;" onclick="window.location.href='profile.html'">👤</div>
     <span class="profile-name" id="profileName"></span>
+    <button class="profile-update-btn" onclick="window.location.href='profile.html'">Profilimi Güncelle</button>
     <button class="logout-btn" onclick="logout()">Çıkış</button>
   </div>
-  <div class="container">
-  <h2>Yoklama Girişi</h2>
+  <div class="main-box">
+    <div class="main-title">Yoklama Girişi</div>
+    <div class="main-message">Yoklama kodunuzu girerek katılım sağlayabilirsiniz.</div>
     <form id="attendanceForm">
       <div class="input-group">
         <input id="code" type="password" placeholder="Kod" required autocomplete="off">

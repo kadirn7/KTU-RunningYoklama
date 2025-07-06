@@ -5,50 +5,240 @@
   <title>Profilim</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:Arial,sans-serif;background:#f7f7f7;margin:0;}
-    .container{max-width:420px;margin:60px auto;padding:32px;background:#fff;border-radius:14px;box-shadow:0 2px 16px #0002;}
-    h2{text-align:center;margin-bottom:28px;}
-    .input-group{margin-bottom:18px;}
-    label{display:block;margin-bottom:6px;font-weight:bold;}
-    input{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:7px;box-sizing:border-box;}
-    .btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:bold;transition:background .2s;}
-    .btn:hover{background:#125ea2;}
-    .success{color:#388e3c;text-align:center;margin:10px 0;}
-    .error{color:#d32f2f;text-align:center;margin:10px 0;}
-    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
-    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
-    .profile-name{font-weight:bold;}
-    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
-    .logout-btn:hover{background:#c62828;}
-    @media (max-width:500px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100vw;
+      max-width: 100vw;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 420px;
+      margin: 0 auto 60px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .profile-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #1976d2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile-title-icon {
+      font-size: 2.1rem;
+    }
+    .profile-desc {
+      font-size: 1.08rem;
+      color: #444;
+      margin-bottom: 22px;
+    }
+    .profile-form {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 0 auto;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 0;
+      gap: 5px;
+    }
+    label {
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 2px;
+      font-size: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1.5px solid #bfc9d1;
+      border-radius: 7px;
+      box-sizing: border-box;
+      background: #f8fafc;
+      transition: border .2s;
+    }
+    input:focus {
+      border: 1.5px solid #1976d2;
+      outline: none;
+      background: #fff;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 17px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s;
+      margin: 18px 0 0 0;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover {
+      background: #125ea2;
+    }
+    .success {
+      color: #388e3c;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .error {
+      color: #d32f2f;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .profile-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      position: absolute;
+      top: 24px;
+      right: 24px;
+    }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .profile-name {
+      font-weight: bold;
+    }
+    .logout-btn {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .logout-btn:hover {
+      background: #c62828;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+      .container {
+        padding: 24px 8px;
+        border-radius: 10px;
+      }
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .btn-cancel {
+      background: #fff;
+      color: #1976d2;
+      border: 1.5px solid #1976d2;
+      padding: 14px;
+      font-size: 17px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s, color .2s;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+      width: 48%;
+    }
+    .btn-cancel:hover {
+      background: #1976d2;
+      color: #fff;
+    }
+    .btn-save {
+      width: 48%;
+    }
   </style>
 </head>
 <body>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
   <div class="profile-bar" id="profileBar" style="display:none;">
     <div class="profile-pic" id="profilePic">👤</div>
     <span class="profile-name" id="profileName"></span>
     <button class="logout-btn" onclick="logout()">Çıkış</button>
   </div>
   <div class="container">
-    <h2>Profilim</h2>
-    <form id="profileForm">
+    <div class="profile-title"><span class="profile-title-icon">👤</span> Profilimi Güncelle</div>
+    <div class="profile-desc">Kişisel bilgilerinizi ve şifrenizi buradan güncelleyebilirsiniz.</div>
+    <form id="profileForm" class="profile-form">
       <div class="input-group">
         <label for="fullName">Ad Soyad</label>
-        <input id="fullName" type="text" required>
+        <input id="fullName" type="text" placeholder="Değiştirmek istemiyorsan boş bırakabilirsin">
       </div>
       <div class="input-group">
         <label for="email">E-posta</label>
-        <input id="email" type="email" required>
+        <input id="email" type="email" placeholder="Değiştirmek istemiyorsan boş bırakabilirsin">
       </div>
       <div class="input-group">
-        <label for="oldPassword">Eski Şifre (şifre değiştirmek için)</label>
+        <label for="oldPassword">Eski Şifre <span style="font-weight:400;color:#888;font-size:0.97em;">(şifre değiştirmek için)</span></label>
         <input id="oldPassword" type="password" placeholder="Şifre değiştirmek istemiyorsan boş bırakabilirsin">
       </div>
       <div class="input-group">
         <label for="newPassword">Yeni Şifre</label>
         <input id="newPassword" type="password" placeholder="Şifre değiştirmek istemiyorsan boş bırak">
       </div>
-      <button type="submit" class="btn">Güncelle</button>
+      <div class="btn-row">
+        <button type="button" class="btn btn-cancel" onclick="window.location.href='code.html'">Geri Dön</button>
+        <button type="submit" class="btn btn-save">Kaydet</button>
+      </div>
     </form>
     <div id="message"></div>
   </div>
@@ -89,23 +279,35 @@ async function logout() {
 
 document.getElementById('profileForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const fullName = document.getElementById('fullName').value;
-  const email = document.getElementById('email').value;
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
   const oldPassword = document.getElementById('oldPassword').value;
   const newPassword = document.getElementById('newPassword').value;
   const msg = document.getElementById('message');
   msg.innerHTML = '';
+  // Sadece dolu alanları gönder
+  const params = [];
+  if(fullName) params.push(`fullName=${encodeURIComponent(fullName)}`);
+  if(email) params.push(`email=${encodeURIComponent(email)}`);
+  if(oldPassword) params.push(`oldPassword=${encodeURIComponent(oldPassword)}`);
+  if(newPassword) params.push(`newPassword=${encodeURIComponent(newPassword)}`);
+  if(params.length === 0) {
+    msg.innerHTML = `<div class='error'>Lütfen en az bir alanı doldurun.</div>`;
+    return;
+  }
   try {
     const res = await fetch('/api/profile', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `fullName=${encodeURIComponent(fullName)}&email=${encodeURIComponent(email)}&oldPassword=${encodeURIComponent(oldPassword)}&newPassword=${encodeURIComponent(newPassword)}`
+      body: params.join('&')
     });
     const data = await res.json();
     if(res.ok){
       msg.innerHTML = `<div class='success'>${data.message}</div>`;
       document.getElementById('oldPassword').value = '';
       document.getElementById('newPassword').value = '';
+      document.getElementById('fullName').value = '';
+      document.getElementById('email').value = '';
     } else {
       msg.innerHTML = `<div class='error'>❌ ${data.message || 'Hata oluştu'}</div>`;
     }

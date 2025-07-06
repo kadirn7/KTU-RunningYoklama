@@ -5,34 +5,129 @@
   <title>Admin Paneli</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:Arial, sans-serif;background:#f7f7f7;margin:0;}
-    .container{max-width:900px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 2px 16px #0001;}
-    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
-    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
-    .profile-name{font-weight:bold;}
-    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
-    .logout-btn:hover{background:#c62828;}
-    h1{text-align:center;margin-bottom:32px;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100vw;
+      max-width: 100vw;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 40px auto;
+    }
+    .main-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #222;
+    }
+    .main-message {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 18px;
+    }
+    .btn, .set-btn, .load-btn, .export-btn, .logout-btn {
+      padding: 14px;
+      font-size: 16px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s;
+      margin: 18px 0 0 0;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover, .set-btn:hover, .load-btn:hover, .export-btn:hover, .logout-btn:hover {
+      background: #125ea2;
+    }
+    .profile-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      position: absolute;
+      top: 24px;
+      right: 24px;
+    }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .profile-name {
+      font-weight: bold;
+    }
     .code-box{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px;}
     .code-input{padding:10px;font-size:18px;border:1px solid #ccc;border-radius:6px;width:160px;text-align:center;}
-    .set-btn{background:#1976d2;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:16px;cursor:pointer;transition:background .2s;}
-    .set-btn:hover{background:#125ea2;}
     .current-code{font-size:18px;margin-bottom:10px;text-align:center;}
     .expires-in{font-size:15px;color:#1976d2;text-align:center;margin-bottom:18px;}
     .attendance-section{margin:30px 0;}
     .date-selector{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
     .date-input{padding:8px;border:1px solid #ccc;border-radius:4px;}
-    .load-btn{background:#28a745;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;}
-    .export-btn{background:#ff9800;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-left:10px;}
     .daily-list{margin:20px 0;}
     .daily-header{background:#e3f2fd;padding:12px;border-radius:6px;margin-bottom:15px;font-weight:bold;font-size:16px;}
     .attendance-item{background:#f9f9f9;padding:10px;margin:5px 0;border-radius:3px;border-left:4px solid #007bff;display:flex;justify-content:space-between;}
     .attendance-time{color:#666;font-size:14px;}
     .no-data{text-align:center;color:#666;font-style:italic;padding:20px;}
-    @media (max-width:800px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+    @media (max-width: 800px) {
+      .container {
+        padding: 24px 8px;
+        border-radius: 10px;
+      }
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
   <div class="profile-bar" id="profileBar" style="display:none;">
     <div class="profile-pic" id="profilePic">👤</div>
     <span class="profile-name" id="profileName"></span>

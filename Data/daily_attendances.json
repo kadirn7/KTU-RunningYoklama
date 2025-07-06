@@ -13,8 +13,14 @@
         "FullName": "YusufS",
         "Timestamp": "2025-07-06T06:03:36.2364468+03:00",
         "Date": "2025-07-06T00:00:00+03:00"
+      },
+      {
+        "Username": "Deneme",
+        "FullName": "Deneme",
+        "Timestamp": "2025-07-06T12:32:34.7993482+03:00",
+        "Date": "2025-07-06T00:00:00+03:00"
       }
     ],
-    "TotalCount": 2
+    "TotalCount": 3
   }
 ]

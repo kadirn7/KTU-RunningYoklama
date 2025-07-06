@@ -4,22 +4,124 @@
   <meta charset="utf-8">
   <title>Şifremi Unuttum</title>
   <style>
-    body{font-family:Arial, sans-serif;max-width:400px;margin:60px auto;text-align:center;}
-    input,button{padding:10px;margin:8px;width:100%;box-sizing:border-box;}
-    .error{color:red;margin:5px 0;}
-    .success{color:green;margin:5px 0;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100vw;
+      max-width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .reset-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+      margin: 80px auto 0 auto;
+    }
+    input,button {
+      padding: 12px;
+      margin: 8px 0 0 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+      border-radius: 7px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      transition: background .2s;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+    button:hover {
+      background: #125ea2;
+    }
+    .error {
+      color: #d32f2f;
+      margin: 5px 0;
+    }
+    .success {
+      color: #388e3c;
+      margin: 5px 0;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 18px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+      .reset-box {
+        padding: 24px 8px;
+        border-radius: 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>Şifremi Unuttum</h2>
-  <form id="resetForm">
-    <input id="username" type="text" placeholder="Kullanıcı Adı" required>
-    <input id="email" type="email" placeholder="E-posta" required>
-    <input id="newPassword" type="password" placeholder="Yeni Şifre (en az 6 karakter)" required>
-    <button type="submit">Şifreyi Güncelle</button>
-  </form>
-  <div id="message"></div>
-  <p><a href="login.html">Girişe Dön</a></p>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
+  <div class="reset-box">
+    <h2>Şifremi Unuttum</h2>
+    <form id="resetForm">
+      <input id="username" type="text" placeholder="Kullanıcı Adı" required>
+      <input id="email" type="email" placeholder="E-posta" required>
+      <input id="newPassword" type="password" placeholder="Yeni Şifre (en az 6 karakter)" required>
+      <button type="submit">Şifreyi Güncelle</button>
+    </form>
+    <div id="message"></div>
+    <a href="login.html">Girişe Dön</a>
+  </div>
 <script>
 document.getElementById('resetForm').addEventListener('submit', async function(e) {
   e.preventDefault();

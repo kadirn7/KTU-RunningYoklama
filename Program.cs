@@ -2,14 +2,15 @@ using System.Security.Claims;
 using Core;
 using Microsoft.AspNetCore.Mvc;
 using Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using AttendanceApp.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register services
-builder.Services.AddSingleton<FileJsonRepository>();
-builder.Services.AddSingleton<UserRepository>();
-builder.Services.AddSingleton<ActiveCodeRepository>();
-builder.Services.AddSingleton<DailyAttendanceRepository>();
+builder.Services.AddDbContext<ApplicationDbContext>(options=>{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+});
 
 var app = builder.Build();
 
@@ -27,11 +28,11 @@ app.UseStaticFiles();
 const string SESSION_COOKIE = "session";
 
 // Initialize default admin user
-using (var scope = app.Services.CreateScope())
-{
-    var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
-    await userRepo.InitializeDefaultAdminAsync();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
+//     await userRepo.InitializeDefaultAdminAsync();
+// }
 
 // Register endpoint
 app.MapPost("/api/register", async (HttpContext ctx, UserRepository userRepo, 

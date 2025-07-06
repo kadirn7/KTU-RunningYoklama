@@ -2,67 +2,120 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <title>Giriş</title>
+  <title>Ana Sayfa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:Arial,sans-serif;background:#f7f7f7;margin:0;}
-    .container{max-width:400px;margin:60px auto;padding:32px;background:#fff;border-radius:14px;box-shadow:0 2px 16px #0002;}
-    h2{text-align:center;margin-bottom:28px;}
-    .input-group{margin-bottom:18px;}
-    input{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:7px;box-sizing:border-box;}
-    .btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:bold;transition:background .2s;}
-    .btn:hover{background:#125ea2;}
-    .error{color:#d32f2f;text-align:center;margin:10px 0;}
-    .links{text-align:center;margin-top:18px;}
-    .links a{color:#1976d2;text-decoration:none;margin:0 8px;}
-    .links a:hover{text-decoration:underline;}
-    @media (max-width:500px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .main-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0002;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+    }
+    .main-icon {
+      font-size: 2.5rem;
+      color: #1976d2;
+      margin-bottom: 16px;
+    }
+    .main-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #222;
+    }
+    .main-message {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 18px;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .2s;
+      margin: 18px 0 0 0;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover {
+      background: #125ea2;
+    }
+    .links {
+      text-align: center;
+      margin-top: 18px;
+    }
+    .links a {
+      color: #1976d2;
+      text-decoration: none;
+      margin: 0 8px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .ktu-header {
+      display: flex;
+      align-items: center;
+      background: #1976d2;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+    .ktu-logo {
+      font-size: 2rem;
+      margin-right: 14px;
+    }
+    .ktu-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 600px) {
+      .ktu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        border-radius: 0 0 12px 12px;
+      }
+      .ktu-title {
+        font-size: 1.1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Giriş Yap</h2>
-    <form id="loginForm">
-      <div class="input-group">
-        <input id="username" type="text" placeholder="Kullanıcı Adı" required>
-      </div>
-      <div class="input-group">
-        <input id="password" type="password" placeholder="Şifre" required>
-      </div>
-      <button type="submit" class="btn">Giriş Yap</button>
-    </form>
-    <div id="message"></div>
+  <div class="ktu-header">
+    <div class="ktu-logo">🏃‍♂️</div>
+    <div class="ktu-title">KTÜ Run</div>
+  </div>
+  <div class="main-box">
+    <div class="main-icon">🏠</div>
+    <div class="main-title">Ana Sayfa</div>
+    <div class="main-message">Yoklama sistemine hoş geldiniz! Lütfen giriş yaparak devam edin.</div>
+    <a href="login.html" class="btn">Giriş Yap</a>
     <div class="links">
-      <a href="register.html">Kayıt Ol</a> |
-      <a href="reset.html">Şifremi Unuttum</a>
+      <a href="register.html">Kayıt Ol</a>
     </div>
   </div>
-<script>
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  const messageDiv = document.getElementById('message');
-  try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-    });
-    if(res.ok){
-      const data = await res.json();
-      if(data.user && data.user.role === 'Admin'){
-        location.href = 'admin.html';
-      } else {
-        location.href = 'code.html';
-      }
-    } else {
-      messageDiv.innerHTML = '<div class="error">❌ Kullanıcı adı veya şifre hatalı</div>';
-    }
-  } catch(e) {
-    messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
-  }
-});
-</script>
 </body>
 </html>

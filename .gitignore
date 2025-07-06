@@ -1,0 +1,36 @@
+# .NET ve Visual Studio için temel .gitignore
+# Build sonuçları
+bin/
+obj/
+
+# User-specific dosyalar
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# MacOS
+.DS_Store
+
+# Log dosyaları
+*.log
+
+# Kişisel ayarlar
+*.swp
+*.tmp
+
+# Publish çıktısı
+publish/
+
+# JSON veri dosyalarını hariç tutmak istemiyorsan Data/ klasörünü ekleme
+# Data/
+
+# Visual Studio ayar klasörü
+.vs/ 
