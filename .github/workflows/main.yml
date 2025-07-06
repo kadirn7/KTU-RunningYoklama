@@ -25,7 +25,7 @@ jobs:
         run: dotnet build ./AttendanceApp.sln --configuration Release
 
       - name: Publish
-        run: dotnet publish ./AttendanceApp.csproj --configuration Release --no-build --output '${{secrets.KTURUNAZURESECRET}}'
+        run: dotnet publish ./AttendanceApp.csproj --configuration Release --no-build --output './publish'
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
