@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Şifremi Unuttum</title>
+  <style>
+    body{font-family:Arial, sans-serif;max-width:400px;margin:60px auto;text-align:center;}
+    input,button{padding:10px;margin:8px;width:100%;box-sizing:border-box;}
+    .error{color:red;margin:5px 0;}
+    .success{color:green;margin:5px 0;}
+  </style>
+</head>
+<body>
+  <h2>Şifremi Unuttum</h2>
+  <form id="resetForm">
+    <input id="username" type="text" placeholder="Kullanıcı Adı" required>
+    <input id="email" type="email" placeholder="E-posta" required>
+    <input id="newPassword" type="password" placeholder="Yeni Şifre (en az 6 karakter)" required>
+    <button type="submit">Şifreyi Güncelle</button>
+  </form>
+  <div id="message"></div>
+  <p><a href="login.html">Girişe Dön</a></p>
+<script>
+document.getElementById('resetForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const email = document.getElementById('email').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const msg = document.getElementById('message');
+  msg.innerHTML = '';
+  try {
+    const res = await fetch('/api/reset-password', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&newPassword=${encodeURIComponent(newPassword)}`
+    });
+    const data = await res.json();
+    if(res.ok){
+      msg.innerHTML = `<div class='success'>${data.message}</div>`;
+    } else {
+      msg.innerHTML = `<div class='error'>❌ ${data.message || 'Hata oluştu'}</div>`;
+    }
+  } catch(e) {
+    msg.innerHTML = `<div class='error'>❌ Bağlantı hatası</div>`;
+  }
+});
+</script>
+</body>
+</html> 

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Profilim</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial,sans-serif;background:#f7f7f7;margin:0;}
+    .container{max-width:420px;margin:60px auto;padding:32px;background:#fff;border-radius:14px;box-shadow:0 2px 16px #0002;}
+    h2{text-align:center;margin-bottom:28px;}
+    .input-group{margin-bottom:18px;}
+    label{display:block;margin-bottom:6px;font-weight:bold;}
+    input{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:7px;box-sizing:border-box;}
+    .btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:bold;transition:background .2s;}
+    .btn:hover{background:#125ea2;}
+    .success{color:#388e3c;text-align:center;margin:10px 0;}
+    .error{color:#d32f2f;text-align:center;margin:10px 0;}
+    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
+    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .profile-name{font-weight:bold;}
+    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
+    .logout-btn:hover{background:#c62828;}
+    @media (max-width:500px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+  </style>
+</head>
+<body>
+  <div class="profile-bar" id="profileBar" style="display:none;">
+    <div class="profile-pic" id="profilePic">👤</div>
+    <span class="profile-name" id="profileName"></span>
+    <button class="logout-btn" onclick="logout()">Çıkış</button>
+  </div>
+  <div class="container">
+    <h2>Profilim</h2>
+    <form id="profileForm">
+      <div class="input-group">
+        <label for="fullName">Ad Soyad</label>
+        <input id="fullName" type="text" required>
+      </div>
+      <div class="input-group">
+        <label for="email">E-posta</label>
+        <input id="email" type="email" required>
+      </div>
+      <div class="input-group">
+        <label for="oldPassword">Eski Şifre (şifre değiştirmek için)</label>
+        <input id="oldPassword" type="password" placeholder="Şifre değiştirmek istemiyorsan boş bırakabilirsin">
+      </div>
+      <div class="input-group">
+        <label for="newPassword">Yeni Şifre</label>
+        <input id="newPassword" type="password" placeholder="Şifre değiştirmek istemiyorsan boş bırak">
+      </div>
+      <button type="submit" class="btn">Güncelle</button>
+    </form>
+    <div id="message"></div>
+  </div>
+<script>
+let currentUser = null;
+window.onload = async function() {
+  try {
+    const res = await fetch('/api/user');
+    if(res.ok) {
+      const user = await res.json();
+      currentUser = user;
+      document.getElementById('profileName').textContent = user.fullName || user.username;
+      document.getElementById('profileBar').style.display = 'flex';
+      document.getElementById('profilePic').textContent = (user.fullName || user.username).charAt(0).toUpperCase();
+      // Profil bilgilerini doldur
+      const profRes = await fetch('/api/profile');
+      if(profRes.ok){
+        const prof = await profRes.json();
+        document.getElementById('fullName').value = prof.fullName;
+        document.getElementById('email').value = prof.email;
+      }
+    } else {
+      location.href = 'login.html';
+    }
+  } catch(e) {
+    location.href = 'login.html';
+  }
+};
+
+async function logout() {
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+    location.href = 'login.html';
+  } catch(e) {
+    location.href = 'login.html';
+  }
+}
+
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const fullName = document.getElementById('fullName').value;
+  const email = document.getElementById('email').value;
+  const oldPassword = document.getElementById('oldPassword').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const msg = document.getElementById('message');
+  msg.innerHTML = '';
+  try {
+    const res = await fetch('/api/profile', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `fullName=${encodeURIComponent(fullName)}&email=${encodeURIComponent(email)}&oldPassword=${encodeURIComponent(oldPassword)}&newPassword=${encodeURIComponent(newPassword)}`
+    });
+    const data = await res.json();
+    if(res.ok){
+      msg.innerHTML = `<div class='success'>${data.message}</div>`;
+      document.getElementById('oldPassword').value = '';
+      document.getElementById('newPassword').value = '';
+    } else {
+      msg.innerHTML = `<div class='error'>❌ ${data.message || 'Hata oluştu'}</div>`;
+    }
+  } catch(e) {
+    msg.innerHTML = `<div class='error'>❌ Bağlantı hatası</div>`;
+  }
+});
+</script>
+</body>
+</html> 

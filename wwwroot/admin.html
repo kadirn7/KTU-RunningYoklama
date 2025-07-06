@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Admin Paneli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial, sans-serif;background:#f7f7f7;margin:0;}
+    .container{max-width:900px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 2px 16px #0001;}
+    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
+    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .profile-name{font-weight:bold;}
+    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
+    .logout-btn:hover{background:#c62828;}
+    h1{text-align:center;margin-bottom:32px;}
+    .code-box{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px;}
+    .code-input{padding:10px;font-size:18px;border:1px solid #ccc;border-radius:6px;width:160px;text-align:center;}
+    .set-btn{background:#1976d2;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:16px;cursor:pointer;transition:background .2s;}
+    .set-btn:hover{background:#125ea2;}
+    .current-code{font-size:18px;margin-bottom:10px;text-align:center;}
+    .expires-in{font-size:15px;color:#1976d2;text-align:center;margin-bottom:18px;}
+    .attendance-section{margin:30px 0;}
+    .date-selector{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+    .date-input{padding:8px;border:1px solid #ccc;border-radius:4px;}
+    .load-btn{background:#28a745;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;}
+    .export-btn{background:#ff9800;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-left:10px;}
+    .daily-list{margin:20px 0;}
+    .daily-header{background:#e3f2fd;padding:12px;border-radius:6px;margin-bottom:15px;font-weight:bold;font-size:16px;}
+    .attendance-item{background:#f9f9f9;padding:10px;margin:5px 0;border-radius:3px;border-left:4px solid #007bff;display:flex;justify-content:space-between;}
+    .attendance-time{color:#666;font-size:14px;}
+    .no-data{text-align:center;color:#666;font-style:italic;padding:20px;}
+    @media (max-width:800px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+  </style>
+</head>
+<body>
+  <div class="profile-bar" id="profileBar" style="display:none;">
+    <div class="profile-pic" id="profilePic">👤</div>
+    <span class="profile-name" id="profileName"></span>
+    <button class="logout-btn" onclick="logout()">Çıkış</button>
+  </div>
+  <div class="container">
+    <h1>Admin Paneli</h1>
+    <div class="current-code" id="currentCode">Aktif Kod: <span id="activeCode">-</span></div>
+    <div class="expires-in" id="expiresIn"></div>
+    <div class="code-box">
+      <input id="newCode" class="code-input" type="text" maxlength="16" placeholder="Yeni Kod">
+      <button class="set-btn" onclick="setActiveCode()">Kodu Güncelle</button>
+    </div>
+    <div id="codeMessage"></div>
+    
+    <div class="attendance-section">
+      <h2>Günlük Yoklama Listeleri</h2>
+      <div class="date-selector">
+        <input type="date" id="dateSelector" class="date-input">
+        <button class="load-btn" onclick="loadAttendanceByDate()">Tarih Seç</button>
+        <button class="export-btn" onclick="exportAllUsers()">Tüm Kullanıcıları Excel'e Aktar</button>
+      </div>
+      <div id="attendanceList" class="daily-list"></div>
+    </div>
+  </div>
+<script>
+let currentUser = null;
+let expiresAt = null;
+let expiresInterval = null;
+
+window.onload = async function() {
+  try {
+    const res = await fetch('/api/user');
+    if(res.ok) {
+      const user = await res.json();
+      if(user.role !== 'Admin') {
+        alert('Bu sayfaya erişim yetkiniz yok');
+        location.href = 'code.html';
+        return;
+      }
+      currentUser = user;
+      document.getElementById('profileName').textContent = user.username;
+      document.getElementById('profileBar').style.display = 'flex';
+      document.getElementById('profilePic').textContent = user.username.charAt(0).toUpperCase();
+      await loadActiveCode();
+      await loadAllAttendanceList();
+    } else {
+      location.href = 'login.html';
+    }
+  } catch(e) {
+    location.href = 'login.html';
+  }
+};
+
+function updateExpiresIn() {
+  if(!expiresAt) { document.getElementById('expiresIn').textContent = ''; return; }
+  const now = new Date();
+  const diff = Math.floor((expiresAt - now) / 1000);
+  if(diff <= 0) {
+    document.getElementById('expiresIn').textContent = 'Kodun süresi doldu';
+    clearInterval(expiresInterval);
+    return;
+  }
+  const min = Math.floor(diff/60);
+  const sec = diff%60;
+  document.getElementById('expiresIn').textContent = `Kalan süre: ${min} dakika ${sec} saniye`;
+}
+
+async function loadActiveCode() {
+  try {
+    const res = await fetch('/api/activecode');
+    if(res.ok) {
+      const data = await res.json();
+      document.getElementById('activeCode').textContent = data.code || '-';
+      if(data.expiresAt){
+        expiresAt = new Date(data.expiresAt);
+        updateExpiresIn();
+        if(expiresInterval) clearInterval(expiresInterval);
+        expiresInterval = setInterval(updateExpiresIn, 1000);
+      } else {
+        document.getElementById('expiresIn').textContent = '';
+        if(expiresInterval) clearInterval(expiresInterval);
+      }
+    }
+  } catch(e) {}
+}
+
+async function setActiveCode() {
+  const code = document.getElementById('newCode').value.trim();
+  const msg = document.getElementById('codeMessage');
+  if(!code) { msg.innerHTML = '<span style="color:#d32f2f;">Kod boş olamaz</span>'; return; }
+  try {
+    const res = await fetch('/api/activecode', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `code=${encodeURIComponent(code)}`
+    });
+    const data = await res.json();
+    if(res.ok){
+      msg.innerHTML = '<span style="color:green;">✅ Kod güncellendi</span>';
+      document.getElementById('activeCode').textContent = code;
+      document.getElementById('newCode').value = '';
+      await loadActiveCode();
+    } else {
+      msg.innerHTML = '<span style="color:#d32f2f;">❌ ' + (data.message || 'Hata') + '</span>';
+    }
+  } catch(e) {
+    msg.innerHTML = '<span style="color:#d32f2f;">❌ Bağlantı hatası</span>';
+  }
+}
+
+async function loadAllAttendanceList() {
+  try {
+    const res = await fetch('/api/attendance');
+    if(res.ok) {
+      const dailyAttendances = await res.json();
+      displayAllAttendanceList(dailyAttendances);
+    } else {
+      document.getElementById('attendanceList').innerHTML = '<p>Yoklama listesi alınamadı</p>';
+    }
+  } catch(e) {
+    document.getElementById('attendanceList').innerHTML = '<p>Bağlantı hatası</p>';
+  }
+}
+
+function displayAllAttendanceList(dailyAttendances) {
+  const listDiv = document.getElementById('attendanceList');
+  if(dailyAttendances.length === 0) {
+    listDiv.innerHTML = '<div class="no-data">Henüz yoklama verisi yok</div>';
+    return;
+  }
+  
+  let html = '';
+  dailyAttendances.forEach(daily => {
+    const date = new Date(daily.date).toLocaleDateString('tr-TR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    html += `<div class="daily-header">${date} (${daily.totalCount} kişi)</div>`;
+    
+    if(daily.attendances && daily.attendances.length > 0) {
+      daily.attendances.forEach(attendance => {
+        const time = new Date(attendance.timestamp).toLocaleTimeString('tr-TR');
+        const fullName = attendance.fullName || attendance.username;
+        html += `
+          <div class="attendance-item">
+            <span><strong>${fullName}</strong></span>
+            <span class="attendance-time">${time}</span>
+          </div>
+        `;
+      });
+    } else {
+      html += '<div class="no-data">Bu gün için yoklama verisi yok</div>';
+    }
+    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">';
+  });
+  
+  listDiv.innerHTML = html;
+}
+
+async function loadAttendanceByDate() {
+  const selectedDate = document.getElementById('dateSelector').value;
+  if(!selectedDate) {
+    alert('Lütfen bir tarih seçin');
+    return;
+  }
+  
+  try {
+    const res = await fetch(`/api/attendance/${selectedDate}`);
+    if(res.ok) {
+      const dailyAttendance = await res.json();
+      displayAttendanceByDate(dailyAttendance, selectedDate);
+    } else {
+      document.getElementById('attendanceList').innerHTML = '<p>Bu tarih için yoklama verisi bulunamadı</p>';
+    }
+  } catch(e) {
+    document.getElementById('attendanceList').innerHTML = '<p>Bağlantı hatası</p>';
+  }
+}
+
+function displayAttendanceByDate(dailyAttendance, selectedDate) {
+  const listDiv = document.getElementById('attendanceList');
+  const date = new Date(selectedDate).toLocaleDateString('tr-TR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
+  if(!dailyAttendance || !dailyAttendance.attendances || dailyAttendance.attendances.length === 0) {
+    listDiv.innerHTML = `<div class="daily-header">${date}</div><div class="no-data">Bu gün için yoklama verisi yok</div>`;
+    return;
+  }
+  
+  let html = `<div class="daily-header">${date} (${dailyAttendance.totalCount} kişi)</div>`;
+  
+  dailyAttendance.attendances.forEach(attendance => {
+    const time = new Date(attendance.timestamp).toLocaleTimeString('tr-TR');
+    const fullName = attendance.fullName || attendance.username;
+    html += `
+      <div class="attendance-item">
+        <span><strong>${fullName}</strong></span>
+        <span class="attendance-time">${time}</span>
+      </div>
+    `;
+  });
+  
+  listDiv.innerHTML = html;
+}
+
+async function exportAllUsers() {
+  try {
+    const res = await fetch('/api/users/export');
+    if(res.ok) {
+      const users = await res.json();
+      let csv = 'Ad Soyad\n';
+      users.forEach(user => {
+        const fullName = user.fullName || user.username;
+        csv += `"${fullName}"\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'kullanicilar_' + new Date().toISOString().split('T')[0] + '.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert('Kullanıcı listesi alınamadı');
+    }
+  } catch(e) {
+    alert('Bağlantı hatası');
+  }
+}
+
+async function logout() {
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+    location.href = 'login.html';
+  } catch(e) {
+    location.href = 'login.html';
+  }
+}
+</script>
+</body>
+</html> 

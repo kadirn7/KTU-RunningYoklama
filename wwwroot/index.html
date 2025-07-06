@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Giriş</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial,sans-serif;background:#f7f7f7;margin:0;}
+    .container{max-width:400px;margin:60px auto;padding:32px;background:#fff;border-radius:14px;box-shadow:0 2px 16px #0002;}
+    h2{text-align:center;margin-bottom:28px;}
+    .input-group{margin-bottom:18px;}
+    input{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:7px;box-sizing:border-box;}
+    .btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:bold;transition:background .2s;}
+    .btn:hover{background:#125ea2;}
+    .error{color:#d32f2f;text-align:center;margin:10px 0;}
+    .links{text-align:center;margin-top:18px;}
+    .links a{color:#1976d2;text-decoration:none;margin:0 8px;}
+    .links a:hover{text-decoration:underline;}
+    @media (max-width:500px){.container{margin:0;padding:12px;border-radius:0;box-shadow:none;}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Giriş Yap</h2>
+    <form id="loginForm">
+      <div class="input-group">
+        <input id="username" type="text" placeholder="Kullanıcı Adı" required>
+      </div>
+      <div class="input-group">
+        <input id="password" type="password" placeholder="Şifre" required>
+      </div>
+      <button type="submit" class="btn">Giriş Yap</button>
+    </form>
+    <div id="message"></div>
+    <div class="links">
+      <a href="register.html">Kayıt Ol</a> |
+      <a href="reset.html">Şifremi Unuttum</a>
+    </div>
+  </div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const messageDiv = document.getElementById('message');
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data.user && data.user.role === 'Admin'){
+        location.href = 'admin.html';
+      } else {
+        location.href = 'code.html';
+      }
+    } else {
+      messageDiv.innerHTML = '<div class="error">❌ Kullanıcı adı veya şifre hatalı</div>';
+    }
+  } catch(e) {
+    messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Yoklama</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial, sans-serif;background:#f7f7f7;margin:0;}
+    .container{max-width:400px;margin:60px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 2px 16px #0001;}
+    .profile-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;position:absolute;top:24px;right:24px;}
+    .profile-pic{width:40px;height:40px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+    .profile-name{font-weight:bold;}
+    .logout-btn{background:#f44336;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;transition:background .2s;}
+    .logout-btn:hover{background:#c62828;}
+    h2{text-align:center;margin-bottom:32px;}
+    .input-group{margin-bottom:20px;}
+    input[type=password]{width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;}
+    .submit-btn{width:100%;padding:14px;font-size:16px;background:#1976d2;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;transition:background .2s;}
+    .submit-btn:hover{background:#125ea2;}
+    .error{color:#d32f2f;text-align:center;margin-top:10px;}
+    @media (max-width:500px){.container{margin:0;padding:16px;border-radius:0;box-shadow:none;}}
+  </style>
+</head>
+<body>
+  <div class="profile-bar" id="profileBar" style="display:none;">
+    <div class="profile-pic" id="profilePic" style="cursor:pointer;" onclick="window.location.href='profile.html'">👤</div>
+    <span class="profile-name" id="profileName"></span>
+    <button class="logout-btn" onclick="logout()">Çıkış</button>
+  </div>
+  <div class="container">
+  <h2>Yoklama Girişi</h2>
+    <form id="attendanceForm">
+      <div class="input-group">
+        <input id="code" type="password" placeholder="Kod" required autocomplete="off">
+      </div>
+      <button type="submit" class="submit-btn">Yoklama Ver</button>
+    </form>
+    <div id="message"></div>
+    <div id="alreadyAttended" style="display:none;text-align:center;margin-top:30px;">
+      <div style="background:#e3fcec;border:2px solid #34c759;border-radius:12px;padding:32px 18px;max-width:350px;margin:0 auto;box-shadow:0 2px 12px #0001;">
+        <div style="font-size:2.2rem;">🏃‍♂️🏃‍♀️🎉</div>
+        <div style="font-size:1.3rem;font-weight:bold;color:#222;margin:12px 0 8px;">Yoklamaya Katıldınız!</div>
+        <div style="color:#34c759;font-size:1.1rem;margin-bottom:10px;">Keyifli koşular dileriz!</div>
+        <div style="font-size:1.7rem;">🥇🥳</div>
+      </div>
+    </div>
+  </div>
+<script>
+let currentUser = null;
+window.onload = async function() {
+  try {
+    const res = await fetch('/api/user');
+    if(res.ok) {
+      const user = await res.json();
+      currentUser = user;
+      document.getElementById('profileName').textContent = user.fullName || user.username;
+      document.getElementById('profileBar').style.display = 'flex';
+      document.getElementById('profilePic').textContent = (user.fullName || user.username).charAt(0).toUpperCase();
+
+      // Katılım kontrolü
+      const statusRes = await fetch('/api/attendance/status');
+      if(statusRes.ok){
+        const status = await statusRes.json();
+        if(status.attended){
+          document.getElementById('attendanceForm').style.display = 'none';
+          document.getElementById('alreadyAttended').style.display = 'block';
+        }
+      }
+    } else {
+      location.href = 'login.html';
+    }
+  } catch(e) {
+    location.href = 'login.html';
+  }
+};
+
+async function logout() {
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+    location.href = 'login.html';
+  } catch(e) {
+    location.href = 'login.html';
+  }
+}
+
+document.getElementById('attendanceForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const code = document.getElementById('code').value;
+  const messageDiv = document.getElementById('message');
+  const alreadyDiv = document.getElementById('alreadyAttended');
+  try {
+    const res = await fetch('/api/attendance', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `code=${encodeURIComponent(code)}`
+  });
+  if(res.ok){
+      messageDiv.innerHTML = '<div style="color:green;text-align:center;margin-top:10px;">✅ Yoklama başarılı!</div>';
+      setTimeout(()=>location.href='success.html', 1200);
+    } else {
+      const data = await res.json();
+      if(data.message && data.message.includes('Zaten yoklamaya katıldınız')){
+        document.getElementById('attendanceForm').style.display = 'none';
+        messageDiv.innerHTML = '';
+        alreadyDiv.style.display = 'block';
+      } else {
+        messageDiv.innerHTML = '<div class="error">❌ ' + (data.message || 'Kod yanlış') + '</div>';
+      }
+    }
+  } catch(e) {
+    messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
+  }
+});
+</script>
+</body>
+</html>
