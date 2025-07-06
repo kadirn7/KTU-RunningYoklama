@@ -3,6 +3,7 @@ using Core;
 using AttendanceApp.Context;
 using AttendanceApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure;
 
@@ -53,15 +54,20 @@ public class UserRepository
         await _db.SaveChangesAsync();
     }
 
-    public async Task InitializeDefaultAdminAsync()
+    public async Task InitializeDefaultAdminAsync(IConfiguration config)
     {
-        if (!await _db.Users.AnyAsync(u => u.Username == "KtuRunYönetim"))
+        var adminSection = config.GetSection("AdminUser");
+        var username = adminSection["Username"];
+        var email = adminSection["Email"];
+        var password = adminSection["Password"];
+
+        if (!await _db.Users.AnyAsync(u => u.Username == username))
         {
             var adminUser = new AttendanceApp.Models.User
             {
-                Username = "KtuRunYönetim",
-                Email = "ktukosukulubu@gmail.com",
-                PasswordHash = PasswordService.HashPassword("KtuRun20242024"),
+                Username = username,
+                Email = email,
+                PasswordHash = PasswordService.HashPassword(password),
                 FullName = "Yönetici",
                 Role = "Admin",
                 CreatedAt = DateTime.Now,

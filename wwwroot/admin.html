@@ -448,7 +448,7 @@ function displayAllAttendanceList(attendances) {
     grouped[dateKey].forEach(att => {
       const time = new Date(att.timestamp).toLocaleTimeString('tr-TR');
       html += `<div class="attendance-item"><span><strong>${att.fullName || att.username}</strong></span><span class="attendance-time">${time}</span></div>`;
-    });
+      });
     html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">';
   });
   listDiv.innerHTML = html;

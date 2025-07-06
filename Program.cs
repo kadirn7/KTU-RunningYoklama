@@ -37,7 +37,7 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Database.MigrateAsync(); // Veritabanı migrasyonlarını uygula
     // Admin ekle
     var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
-    await userRepo.InitializeDefaultAdminAsync();
+    await userRepo.InitializeDefaultAdminAsync(builder.Configuration);
 }
 
 // Register endpoint

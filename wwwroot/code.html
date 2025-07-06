@@ -301,8 +301,8 @@ document.getElementById('attendanceForm').addEventListener('submit', async funct
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `code=${encodeURIComponent(code)}`
-    });
-    if(res.ok){
+  });
+  if(res.ok){
       messageDiv.innerHTML = '<div style="color:green;text-align:center;margin-top:10px;">✅ Yoklama başarılı!</div>';
       setTimeout(()=>location.href='success.html', 1200);
     } else {

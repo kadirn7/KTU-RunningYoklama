@@ -6,19 +6,6 @@ Modern, mobil uyumlu ve güvenli web tabanlı yoklama uygulaması.
 
 ---
 
-## 📱 Ekran Görüntüleri
-
-Ana Sayfa:  
-![AnaSayfa](Data/AnaSayfa.jpeg)
-
-Admin Paneli:  
-![AdminSayfası](Data/AdminSayfası.jpeg)
-
-Yoklama Sayfası:  
-![YoklamaSayfası](Data/YoklamaSayfası.jpeg)
-
----
-
 ## ✨ Özellikler
 
 - Mobil uyumlu, modern arayüz
@@ -83,9 +70,9 @@ AttendanceApp/
 [
   {
     "Id": 1,
-    "Username": "KtuRunYönetim",
-    "Email": "ktukosukulubu@gmail.com",
-    "PasswordHash": "N1rSb0LD8uBxRJFUoI+sj8kF7z5n0LzAK4DgBnkN46E=",
+    "Username": "<gizli>",
+    "Email": "<gizli>",
+    "PasswordHash": "<gizli>",
     "FullName": "Yönetici",
     "CreatedAt": "2025-07-06T15:14:34.9638567+03:00",
     "IsActive": true,
