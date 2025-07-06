@@ -1,0 +1,28 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore ./AttendanceApp.sln
+
+      - name: Build
+        run: dotnet build ./AttendanceApp.sln --configuration Release
+
+      - name: Publish
+        run: dotnet publish ./AttendanceApp.sln --configuration Release --no-build 
