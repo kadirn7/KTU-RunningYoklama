@@ -26,3 +26,10 @@ jobs:
 
       - name: Publish
         run: dotnet publish ./AttendanceApp.sln --configuration Release --no-build 
+
+      - name: Deployment
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: KTURUN-Yoklama
+          publish-profile: ${{secrets.KTURUNAZURESECRET}}
+          package: './publish'
