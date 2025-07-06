@@ -1,42 +1,12 @@
 [
   {
     "Id": 1,
-    "Username": "admin",
-    "Email": "admin@kosuapp.com",
-    "PasswordHash": "PrP\u002BZrMeO00Q\u002BnC1ytSccRIpSvauTkdqHEBRVdRaoSE=",
-    "FullName": "Sistem Y\u00F6neticisi",
-    "CreatedAt": "2025-07-06T05:19:41.0962667+03:00",
+    "Username": "KtuRunY\u00F6netim",
+    "Email": "ktukosukulubu@gmail.com",
+    "PasswordHash": "N1rSb0LD8uBxRJFUoI\u002Bsj8kF7z5n0LzAK4DgBnkN46E=",
+    "FullName": "Y\u00F6netici",
+    "CreatedAt": "2025-07-06T15:14:34.9638567+03:00",
     "IsActive": true,
     "Role": "Admin"
-  },
-  {
-    "Id": 2,
-    "Username": "Kadirn7",
-    "Email": "kadir@gmail.com",
-    "PasswordHash": "9aVERqWVLpQVDvhz\u002B8PI6fJPDxaRXj27dBNUKR\u002B9o2M=",
-    "FullName": "Kadir Pa\u015Fao\u011Flu",
-    "CreatedAt": "2025-07-06T05:22:29.3171338+03:00",
-    "IsActive": true,
-    "Role": "User"
-  },
-  {
-    "Id": 3,
-    "Username": "Yusuf",
-    "Email": "yusufyusuf@gmail.com",
-    "PasswordHash": "i7DPbrmxfQ99IrRW8SElfcElTh8BZlNwR2OD6ndt9BQ=",
-    "FullName": "YusufS",
-    "CreatedAt": "2025-07-06T06:03:04.0622326+03:00",
-    "IsActive": true,
-    "Role": "User"
-  },
-  {
-    "Id": 4,
-    "Username": "Deneme",
-    "Email": "Deneme@gmail.com",
-    "PasswordHash": "nKeVv6\u002BQ40/WFMe/QBe\u002BGe6OQ8E7qp8g9JMJUjTmzIg=",
-    "FullName": "Deneme",
-    "CreatedAt": "2025-07-06T12:32:14.5007715+03:00",
-    "IsActive": true,
-    "Role": "User"
   }
 ]

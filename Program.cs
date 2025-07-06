@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using AttendanceApp.Context;
+using AttendanceApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options=>{
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ActiveCodeRepository>();
 
 var app = builder.Build();
 
@@ -28,14 +31,17 @@ app.UseStaticFiles();
 const string SESSION_COOKIE = "session";
 
 // Initialize default admin user
-// using (var scope = app.Services.CreateScope())
-// {
-//     var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
-//     await userRepo.InitializeDefaultAdminAsync();
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync(); // Veritabanı migrasyonlarını uygula
+    // Admin ekle
+    var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
+    await userRepo.InitializeDefaultAdminAsync();
+}
 
 // Register endpoint
-app.MapPost("/api/register", async (HttpContext ctx, UserRepository userRepo, 
+app.MapPost("/api/register", async (HttpContext ctx, [FromServices] UserRepository userRepo, 
     [FromForm] string username, [FromForm] string email, [FromForm] string password, [FromForm] string fullName) =>
 {
     try
@@ -52,7 +58,15 @@ app.MapPost("/api/register", async (HttpContext ctx, UserRepository userRepo,
             return Results.BadRequest("Şifre en az 6 karakter olmalıdır");
         }
 
-        var user = new User(username, email, PasswordService.HashPassword(password), fullName);
+        var user = new AttendanceApp.Models.User {
+            Username = username,
+            Email = email,
+            PasswordHash = PasswordService.HashPassword(password),
+            FullName = fullName,
+            CreatedAt = DateTime.Now,
+            IsActive = true,
+            Role = "User"
+        };
         await userRepo.AddAsync(user);
         
         return Results.Ok(new { message = "Kullanıcı başarıyla oluşturuldu" });
@@ -68,7 +82,7 @@ app.MapPost("/api/register", async (HttpContext ctx, UserRepository userRepo,
 }).DisableAntiforgery();
 
 // Login endpoint
-app.MapPost("/api/login", async (HttpContext ctx, UserRepository userRepo, 
+app.MapPost("/api/login", async (HttpContext ctx, [FromServices] UserRepository userRepo, 
     [FromForm] string username, [FromForm] string password) =>
 {
     try
@@ -110,7 +124,7 @@ app.MapPost("/api/logout", (HttpContext ctx) =>
 }).DisableAntiforgery();
 
 // Set active code (admin only, 5 dakika süreli)
-app.MapPost("/api/activecode", async (HttpContext ctx, ActiveCodeRepository codeRepo) =>
+app.MapPost("/api/activecode", async (HttpContext ctx, [FromServices] ActiveCodeRepository codeRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -125,7 +139,7 @@ app.MapPost("/api/activecode", async (HttpContext ctx, ActiveCodeRepository code
 }).DisableAntiforgery();
 
 // Get active code (admin only)
-app.MapGet("/api/activecode", async (HttpContext ctx, ActiveCodeRepository codeRepo) =>
+app.MapGet("/api/activecode", async (HttpContext ctx, [FromServices] ActiveCodeRepository codeRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -136,7 +150,7 @@ app.MapGet("/api/activecode", async (HttpContext ctx, ActiveCodeRepository codeR
 });
 
 // Attendance endpoint (only code, name from session, kod süresi kontrolü)
-app.MapPost("/api/attendance", async (HttpContext ctx, DailyAttendanceRepository repo, ActiveCodeRepository codeRepo, UserRepository userRepo) =>
+app.MapPost("/api/attendance", async (HttpContext ctx, [FromServices] ApplicationDbContext db, [FromServices] ActiveCodeRepository codeRepo, [FromServices] UserRepository userRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -151,64 +165,63 @@ app.MapPost("/api/attendance", async (HttpContext ctx, DailyAttendanceRepository
         return Results.BadRequest("Kodun süresi doldu");
     if (code != info.Code)
         return Results.BadRequest("Kod yanlış");
-    
-    // Kullanıcının tam adını al
     var user = await userRepo.GetByUsernameAsync(session.Username);
     var fullName = user?.FullName ?? session.Username;
-
-    // Kullanıcı bugün yoklama verdi mi kontrol et
-    if (await repo.HasAttendedTodayAsync(session.Username, DateTime.Now.Date))
+    var today = DateTime.Now.Date;
+    bool alreadyAttended = await db.Attendances.AnyAsync(a => a.Username == session.Username && a.Date == today);
+    if (alreadyAttended)
     {
         return Results.BadRequest(new { message = "Zaten yoklamaya katıldınız. Keyifli koşular! 🏃‍♂️🏃‍♀️🎉" });
     }
-    
-    await repo.AddAttendanceAsync(new Attendance(session.Username, fullName, DateTime.Now));
+    var attendance = new AttendanceApp.Models.Attendance {
+        Username = session.Username,
+        FullName = fullName,
+        Timestamp = DateTime.Now,
+        Date = today
+    };
+    db.Attendances.Add(attendance);
+    await db.SaveChangesAsync();
     return Results.Ok();
 }).DisableAntiforgery();
 
 // Get daily attendance list (Admin only)
-app.MapGet("/api/attendance", async (HttpContext ctx, DailyAttendanceRepository repo) =>
+app.MapGet("/api/attendance", async (HttpContext ctx, [FromServices] ApplicationDbContext db) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
-    
     if (session == null || session.Role != "Admin")
         return Results.Unauthorized();
-
-    var dailyAttendances = await repo.GetAllAsync();
-    return Results.Ok(dailyAttendances);
+    var attendances = await db.Attendances.ToListAsync();
+    return Results.Ok(attendances);
 });
 
 // Get attendance by date (Admin only)
-app.MapGet("/api/attendance/{date}", async (HttpContext ctx, DailyAttendanceRepository repo, string date) =>
+app.MapGet("/api/attendance/{date}", async (HttpContext ctx, [FromServices] ApplicationDbContext db, string date) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
-    
     if (session == null || session.Role != "Admin")
         return Results.Unauthorized();
-
     if (!DateTime.TryParse(date, out var parsedDate))
         return Results.BadRequest("Geçersiz tarih formatı");
-
-    var dailyAttendance = await repo.GetByDateAsync(parsedDate);
-    return Results.Ok(dailyAttendance);
+    var attendances = await db.Attendances.Where(a => a.Date == parsedDate.Date).ToListAsync();
+    return Results.Ok(attendances);
 });
 
 // Get attendance status (user only)
-app.MapGet("/api/attendance/status", async (HttpContext ctx, DailyAttendanceRepository repo) =>
+app.MapGet("/api/attendance/status", async (HttpContext ctx, [FromServices] ApplicationDbContext db) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
     if (session == null)
         return Results.Unauthorized();
-
-    bool attended = await repo.HasAttendedTodayAsync(session.Username, DateTime.Now.Date);
+    var today = DateTime.Now.Date;
+    bool attended = await db.Attendances.AnyAsync(a => a.Username == session.Username && a.Date == today);
     return Results.Ok(new { attended });
 });
 
 // Get all users for Excel export (Admin only)
-app.MapGet("/api/users/export", async (HttpContext ctx, UserRepository userRepo) =>
+app.MapGet("/api/users/export", async (HttpContext ctx, [FromServices] UserRepository userRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -222,7 +235,7 @@ app.MapGet("/api/users/export", async (HttpContext ctx, UserRepository userRepo)
 });
 
 // Get current user info
-app.MapGet("/api/user", async (HttpContext ctx, UserRepository userRepo) =>
+app.MapGet("/api/user", async (HttpContext ctx, [FromServices] UserRepository userRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -239,7 +252,7 @@ app.MapGet("/api/user", async (HttpContext ctx, UserRepository userRepo) =>
     });
 });
 
-app.MapPost("/api/reset-password", async (UserRepository userRepo, [FromForm] string username, [FromForm] string email, [FromForm] string newPassword) =>
+app.MapPost("/api/reset-password", async ([FromServices] UserRepository userRepo, [FromForm] string username, [FromForm] string email, [FromForm] string newPassword) =>
 {
     var user = await userRepo.GetByUsernameAsync(username);
     if (user == null || !user.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
@@ -252,7 +265,7 @@ app.MapPost("/api/reset-password", async (UserRepository userRepo, [FromForm] st
 }).DisableAntiforgery();
 
 // Kullanıcı profil bilgilerini getir
-app.MapGet("/api/profile", async (HttpContext ctx, UserRepository userRepo) =>
+app.MapGet("/api/profile", async (HttpContext ctx, [FromServices] UserRepository userRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);
@@ -265,7 +278,7 @@ app.MapGet("/api/profile", async (HttpContext ctx, UserRepository userRepo) =>
 });
 
 // Kullanıcı profil bilgilerini güncelle
-app.MapPost("/api/profile", async (HttpContext ctx, UserRepository userRepo) =>
+app.MapPost("/api/profile", async (HttpContext ctx, [FromServices] UserRepository userRepo) =>
 {
     var sessionId = ctx.Request.Cookies[SESSION_COOKIE];
     var session = SessionService.GetSession(sessionId);

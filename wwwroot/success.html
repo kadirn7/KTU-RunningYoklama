@@ -102,7 +102,15 @@
     <div class="success-title">Yoklama Alındı</div>
     <div class="success-message">Teşekkürler, yoklamanız kaydedildi.</div>
     <div class="motivation">Keyifli koşular dileriz! 🏃‍♂️🏃‍♀️🎉</div>
-    <div class="info">Bu pencereyi kapatabilirsiniz.</div>
+    <div class="info"><button id="closeBtn" style="background:none;border:none;color:#1976d2;text-decoration:underline;cursor:pointer;font-size:1em;">Bu pencereyi kapatabilirsiniz.</button></div>
   </div>
+  <script>
+  document.getElementById('closeBtn').onclick = function() {
+    window.location.href = '/index.html';
+  };
+  setTimeout(function() {
+    window.location.href = '/index.html';
+  }, 5000);
+  </script>
 </body>
 </html>

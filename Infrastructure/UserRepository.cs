@@ -1,109 +1,74 @@
 using System.Text.Json;
 using Core;
+using AttendanceApp.Context;
+using AttendanceApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
 public class UserRepository
 {
-    private readonly string _path = Path.Combine("Data", "users.json");
-
-    public async Task<List<User>> GetAllAsync()
+    private readonly ApplicationDbContext _db;
+    public UserRepository(ApplicationDbContext db)
     {
-        try
-        {
-            if (!File.Exists(_path)) return new List<User>();
-            var json = await File.ReadAllTextAsync(_path);
-            return JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error reading users: {ex.Message}");
-            return new List<User>();
-        }
+        _db = db;
     }
 
-    public async Task<User?> GetByUsernameAsync(string username)
+    public async Task<List<AttendanceApp.Models.User>> GetAllAsync()
     {
-        var users = await GetAllAsync();
-        return users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+        return await _db.Users.ToListAsync();
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<AttendanceApp.Models.User?> GetByUsernameAsync(string username)
     {
-        var users = await GetAllAsync();
-        return users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        return await _db.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
     }
 
-    public async Task AddAsync(User user)
+    public async Task<AttendanceApp.Models.User?> GetByEmailAsync(string email)
     {
-        try
-        {
-            var users = await GetAllAsync();
-            
-            // Check if username or email already exists
-            if (users.Any(u => u.Username.Equals(user.Username, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException("Username already exists");
-                
-            if (users.Any(u => u.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException("Email already exists");
-            
-            user.Id = users.Count > 0 ? users.Max(u => u.Id) + 1 : 1;
-            users.Add(user);
-            
-            Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-            await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true }));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error adding user: {ex.Message}");
-            throw;
-        }
+        return await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task AddAsync(AttendanceApp.Models.User user)
     {
-        try
-        {
-            var users = await GetAllAsync();
-            var existingUser = users.FirstOrDefault(u => u.Id == user.Id);
-            if (existingUser == null)
-                throw new InvalidOperationException("User not found");
-            
-            existingUser.Username = user.Username;
-            existingUser.Email = user.Email;
-            existingUser.FullName = user.FullName;
-            existingUser.IsActive = user.IsActive;
-            existingUser.Role = user.Role;
-            existingUser.PasswordHash = user.PasswordHash;
-            
-            await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true }));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error updating user: {ex.Message}");
-            throw;
-        }
+        if (await _db.Users.AnyAsync(u => u.Username.ToLower() == user.Username.ToLower()))
+            throw new InvalidOperationException("Username already exists");
+        if (await _db.Users.AnyAsync(u => u.Email.ToLower() == user.Email.ToLower()))
+            throw new InvalidOperationException("Email already exists");
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(AttendanceApp.Models.User user)
+    {
+        var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+        if (existingUser == null)
+            throw new InvalidOperationException("User not found");
+        existingUser.Username = user.Username;
+        existingUser.Email = user.Email;
+        existingUser.FullName = user.FullName;
+        existingUser.IsActive = user.IsActive;
+        existingUser.Role = user.Role;
+        existingUser.PasswordHash = user.PasswordHash;
+        await _db.SaveChangesAsync();
     }
 
     public async Task InitializeDefaultAdminAsync()
     {
-        var users = await GetAllAsync();
-        if (!users.Any(u => u.Role == "Admin"))
+        if (!await _db.Users.AnyAsync(u => u.Username == "KtuRunYönetim"))
         {
-            var adminUser = new User(
-                "admin",
-                "admin@kosuapp.com",
-                PasswordService.HashPassword("Admin123!"),
-                "Sistem Yöneticisi"
-            )
+            var adminUser = new AttendanceApp.Models.User
             {
+                Username = "KtuRunYönetim",
+                Email = "ktukosukulubu@gmail.com",
+                PasswordHash = PasswordService.HashPassword("KtuRun20242024"),
+                FullName = "Yönetici",
                 Role = "Admin",
                 CreatedAt = DateTime.Now,
                 IsActive = true
             };
-            
-            await AddAsync(adminUser);
-            Console.WriteLine("Default admin user created: admin / Admin123!");
+            _db.Users.Add(adminUser);
+            await _db.SaveChangesAsync();
         }
     }
 } 

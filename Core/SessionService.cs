@@ -7,7 +7,7 @@ public class SessionService
 {
     private static readonly Dictionary<string, UserSession> _sessions = new();
     
-    public static string CreateSession(User user)
+    public static string CreateSession(AttendanceApp.Models.User user)
     {
         var sessionId = GenerateSessionId();
         var session = new UserSession

@@ -1,32 +1,36 @@
-using System.Text.Json;
+using AttendanceApp.Context;
+using AttendanceApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class ActiveCodeInfo
-{
-    public string Code { get; set; } = string.Empty;
-    public DateTime ExpiresAt { get; set; }
-}
-
 public class ActiveCodeRepository
 {
-    private readonly string _path = Path.Combine("Data", "activecode.json");
-
-    public async Task<ActiveCodeInfo?> GetActiveCodeAsync()
+    private readonly ApplicationDbContext _db;
+    public ActiveCodeRepository(ApplicationDbContext db)
     {
-        if (!File.Exists(_path)) return null;
-        var json = await File.ReadAllTextAsync(_path);
-        return JsonSerializer.Deserialize<ActiveCodeInfo>(json);
+        _db = db;
+    }
+
+    public async Task<ActiveCode?> GetActiveCodeAsync()
+    {
+        return await _db.ActiveCodes.OrderByDescending(a => a.ExpiresAt).FirstOrDefaultAsync();
     }
 
     public async Task SetActiveCodeAsync(string code, int minutes = 5)
     {
-        var info = new ActiveCodeInfo
+        // Önce eski kodları sil
+        var all = _db.ActiveCodes.ToList();
+        _db.ActiveCodes.RemoveRange(all);
+        await _db.SaveChangesAsync();
+
+        // Yeni kodu ekle
+        var info = new ActiveCode
         {
             Code = code,
             ExpiresAt = DateTime.UtcNow.AddMinutes(minutes)
         };
-        Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-        await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(info));
+        _db.ActiveCodes.Add(info);
+        await _db.SaveChangesAsync();
     }
 } 
