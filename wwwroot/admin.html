@@ -359,12 +359,12 @@ window.onload = async function() {
 function updateExpiresIn() {
   if(!expiresAt) { document.getElementById('expiresIn').textContent = ''; return; }
   const now = new Date();
-  const diff = Math.floor((expiresAt - now) / 1000);
-  if(diff <= 0) {
+  if(expiresAt <= now) {
     document.getElementById('expiresIn').textContent = 'Kodun süresi doldu';
     clearInterval(expiresInterval);
     return;
   }
+  const diff = Math.floor((expiresAt - now) / 1000);
   const min = Math.floor(diff/60);
   const sec = diff%60;
   document.getElementById('expiresIn').textContent = `Kalan süre: ${min} dakika ${sec} saniye`;
@@ -378,9 +378,11 @@ async function loadActiveCode() {
       document.getElementById('activeCode').textContent = data.code || '-';
       if(data.expiresAt){
         expiresAt = new Date(data.expiresAt);
-        updateExpiresIn();
+        const expiresDiv = document.getElementById('expiresIn');
+        expiresDiv.style.color = '#1976d2';
+        expiresDiv.style.fontWeight = 'normal';
+        expiresDiv.textContent = 'Geçerlilik: ' + expiresAt.toLocaleString('tr-TR');
         if(expiresInterval) clearInterval(expiresInterval);
-        expiresInterval = setInterval(updateExpiresIn, 1000);
       } else {
         document.getElementById('expiresIn').textContent = '';
         if(expiresInterval) clearInterval(expiresInterval);

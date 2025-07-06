@@ -134,7 +134,7 @@ app.MapPost("/api/activecode", async (HttpContext ctx, [FromServices] ActiveCode
     var code = form["code"].ToString();
     if (string.IsNullOrWhiteSpace(code))
         return Results.BadRequest("Kod boş olamaz");
-    await codeRepo.SetActiveCodeAsync(code, 5); // 5 dakika
+    await codeRepo.SetActiveCodeAsync(code, 1440, true); // 1 gün, Türkiye saati (geliştirme için)
     return Results.Ok(new { message = "Kod güncellendi", code });
 }).DisableAntiforgery();
 
@@ -167,7 +167,7 @@ app.MapPost("/api/attendance", async (HttpContext ctx, [FromServices] Applicatio
         return Results.BadRequest("Kod yanlış");
     var user = await userRepo.GetByUsernameAsync(session.Username);
     var fullName = user?.FullName ?? session.Username;
-    var today = DateTime.Now.Date;
+    var today = DateTime.UtcNow.AddHours(3).Date;
     bool alreadyAttended = await db.Attendances.AnyAsync(a => a.Username == session.Username && a.Date == today);
     if (alreadyAttended)
     {
@@ -176,7 +176,7 @@ app.MapPost("/api/attendance", async (HttpContext ctx, [FromServices] Applicatio
     var attendance = new AttendanceApp.Models.Attendance {
         Username = session.Username,
         FullName = fullName,
-        Timestamp = DateTime.Now,
+        Timestamp = DateTime.UtcNow.AddHours(3),
         Date = today
     };
     db.Attendances.Add(attendance);
