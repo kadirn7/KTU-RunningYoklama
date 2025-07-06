@@ -17,7 +17,7 @@ public class ActiveCodeRepository
         return await _db.ActiveCodes.OrderByDescending(a => a.ExpiresAt).FirstOrDefaultAsync();
     }
 
-    public async Task SetActiveCodeAsync(string code, int minutes = 5)
+    public async Task SetActiveCodeAsync(string code, int minutes = 1440)
     {
         // Önce eski kodları sil
         var all = _db.ActiveCodes.ToList();

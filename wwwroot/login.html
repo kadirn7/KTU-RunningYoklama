@@ -3,70 +3,127 @@
 <head>
   <meta charset="utf-8">
   <title>Giriş Yap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%);
+    }
+    .ktu-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      background: #1976d2;
+      color: #fff;
+      padding: 10px 0 8px 0;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 2px 8px #0001;
+      width: 100vw;
+      min-height: 54px;
+    }
+    .ktu-logo {
+      font-size: 1.7rem;
+      margin-right: 10px;
+    }
+    .ktu-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      letter-spacing: 1px;
     }
     .login-box {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px #0002;
-      padding: 48px 32px;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #1976d211;
+      padding: 32px 16px 24px 16px;
       text-align: center;
-      max-width: 400px;
+      max-width: 98vw;
+      width: 100%;
+      margin: 80px auto 0 auto;
+      animation: fadein .7s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
     }
     .login-icon {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       color: #1976d2;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
     .login-title {
-      font-size: 2rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       color: #222;
     }
     .input-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       text-align: left;
+    }
+    label {
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 2px;
+      font-size: 1rem;
     }
     input {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 7px;
+      padding: 16px 14px;
+      font-size: 1.15rem;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
       box-sizing: border-box;
+      background: #f1f8ff;
+      color: #1976d2;
+      font-weight: bold;
+      outline: none;
       margin-top: 6px;
+      transition: border .2s;
+    }
+    input:focus {
+      border: 2px solid #34c759;
+      background: #e3fcec;
     }
     .btn {
       width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      background: #1976d2;
+      padding: 16px;
+      font-size: 1.15rem;
+      background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
       color: #fff;
       border: none;
-      border-radius: 7px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
       transition: background .2s;
-      margin-top: 10px;
     }
-    .btn:hover {
-      background: #125ea2;
+    .btn:active {
+      background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
     }
     .error {
       color: #d32f2f;
       background: #fdecea;
-      border-radius: 7px;
+      border-radius: 10px;
       padding: 10px;
       margin: 10px 0;
+      font-size: 1.05rem;
     }
     .links {
       text-align: center;
@@ -76,40 +133,30 @@
       color: #1976d2;
       text-decoration: none;
       margin: 0 8px;
+      font-size: 1rem;
+      font-weight: 500;
     }
-    .links a:hover {
+    .links a:active {
       text-decoration: underline;
-    }
-    .ktu-header {
-      display: flex;
-      align-items: center;
-      background: #1976d2;
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 0 0 18px 18px;
-      box-shadow: 0 2px 8px #0001;
-      margin-bottom: 32px;
-      justify-content: center;
-    }
-    .ktu-logo {
-      font-size: 2rem;
-      margin-right: 14px;
-    }
-    .ktu-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      letter-spacing: 1px;
     }
     @media (max-width: 600px) {
       .ktu-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 12px;
+        padding: 8px 0 6px 0;
         border-radius: 0 0 12px 12px;
+        min-height: 44px;
       }
       .ktu-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
+      .login-box {
+        padding: 18px 2vw 14px 2vw;
+        border-radius: 10px;
+        margin-top: 64px;
+      }
+    }
+    @media (max-width: 400px) {
+      .login-title { font-size: 1.05rem; }
+      .login-box { padding: 10px 1vw 8px 1vw; }
     }
   </style>
 </head>
@@ -121,14 +168,14 @@
   <div class="login-box">
     <div class="login-icon">🔑</div>
     <div class="login-title">Giriş Yap</div>
-    <form id="loginForm">
+    <form id="loginForm" autocomplete="off">
       <div class="input-group">
         <label for="username">Kullanıcı Adı</label>
-        <input id="username" type="text" required>
+        <input id="username" type="text" required autocomplete="username" autofocus>
       </div>
       <div class="input-group">
         <label for="password">Şifre</label>
-        <input id="password" type="password" required>
+        <input id="password" type="password" required autocomplete="current-password">
       </div>
       <button type="submit" class="btn">Giriş Yap</button>
     </form>
@@ -164,6 +211,11 @@
         messageDiv.innerHTML = '<div class="error">❌ Bağlantı hatası</div>';
       }
     });
+    // Mobilde inputa otomatik odaklan
+    setTimeout(()=>{
+      const userInput = document.getElementById('username');
+      if(userInput) userInput.focus();
+    }, 300);
   </script>
 </body>
 </html>

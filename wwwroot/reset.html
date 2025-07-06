@@ -3,81 +3,130 @@
 <head>
   <meta charset="utf-8">
   <title>Şifremi Unuttum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      align-items: stretch;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%);
     }
     .ktu-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
+      justify-content: center;
       background: #1976d2;
       color: #fff;
-      padding: 14px 24px;
+      padding: 10px 0 8px 0;
       border-radius: 0 0 18px 18px;
       box-shadow: 0 2px 8px #0001;
-      margin-bottom: 32px;
-      justify-content: center;
       width: 100vw;
-      max-width: 100vw;
-      position: absolute;
-      top: 0;
-      left: 0;
+      min-height: 54px;
     }
     .ktu-logo {
-      font-size: 2rem;
-      margin-right: 14px;
+      font-size: 1.7rem;
+      margin-right: 10px;
     }
     .ktu-title {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
       letter-spacing: 1px;
     }
     .reset-box {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px #0002;
-      padding: 48px 32px;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #1976d211;
+      padding: 32px 16px 24px 16px;
       text-align: center;
-      max-width: 400px;
-      margin: 80px auto 0 auto;
-    }
-    input,button {
-      padding: 12px;
-      margin: 8px 0 0 0;
+      max-width: 98vw;
       width: 100%;
+      margin: 80px auto 0 auto;
+      animation: fadein .7s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
+    }
+    .reset-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #1976d2;
+    }
+    .input-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    label {
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 2px;
+      font-size: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 16px 14px;
+      font-size: 1.15rem;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
       box-sizing: border-box;
-      font-size: 16px;
-      border-radius: 7px;
-      border: 1px solid #ccc;
+      background: #f1f8ff;
+      color: #1976d2;
+      font-weight: bold;
+      outline: none;
+      margin-top: 6px;
+      transition: border .2s;
+    }
+    input:focus {
+      border: 2px solid #34c759;
+      background: #e3fcec;
     }
     button {
-      background: #1976d2;
+      width: 100%;
+      padding: 16px;
+      font-size: 1.15rem;
+      background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
       color: #fff;
       border: none;
+      border-radius: 12px;
+      cursor: pointer;
       font-weight: bold;
-      transition: background .2s;
+      margin-top: 8px;
+      margin-bottom: 8px;
       box-shadow: 0 2px 8px #1976d222;
       letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-top: 18px;
+      transition: background .2s;
     }
-    button:hover {
-      background: #125ea2;
+    button:active {
+      background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
     }
     .error {
       color: #d32f2f;
-      margin: 5px 0;
+      background: #fdecea;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1.05rem;
     }
     .success {
       color: #388e3c;
-      margin: 5px 0;
+      background: #e8f5e9;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1.05rem;
     }
     a {
       color: #1976d2;
@@ -85,24 +134,29 @@
       font-weight: 500;
       display: inline-block;
       margin-top: 18px;
+      font-size: 1rem;
     }
-    a:hover {
+    a:active {
       text-decoration: underline;
     }
     @media (max-width: 600px) {
       .ktu-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 12px;
+        padding: 8px 0 6px 0;
         border-radius: 0 0 12px 12px;
+        min-height: 44px;
       }
       .ktu-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       .reset-box {
-        padding: 24px 8px;
+        padding: 18px 2vw 14px 2vw;
         border-radius: 10px;
+        margin-top: 64px;
       }
+    }
+    @media (max-width: 400px) {
+      .reset-title { font-size: 1.05rem; }
+      .reset-box { padding: 10px 1vw 8px 1vw; }
     }
   </style>
 </head>
@@ -112,11 +166,20 @@
     <div class="ktu-title">KTÜ Run</div>
   </div>
   <div class="reset-box">
-    <h2>Şifremi Unuttum</h2>
-    <form id="resetForm">
-      <input id="username" type="text" placeholder="Kullanıcı Adı" required>
-      <input id="email" type="email" placeholder="E-posta" required>
-      <input id="newPassword" type="password" placeholder="Yeni Şifre (en az 6 karakter)" required>
+    <div class="reset-title">Şifremi Unuttum</div>
+    <form id="resetForm" autocomplete="off">
+      <div class="input-group">
+        <label for="username">Kullanıcı Adı</label>
+        <input id="username" type="text" placeholder="Kullanıcı Adı" required autocomplete="username" autofocus>
+      </div>
+      <div class="input-group">
+        <label for="email">E-posta</label>
+        <input id="email" type="email" placeholder="E-posta" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="newPassword">Yeni Şifre (en az 6 karakter)</label>
+        <input id="newPassword" type="password" placeholder="Yeni Şifre (en az 6 karakter)" required autocomplete="new-password">
+      </div>
       <button type="submit">Şifreyi Güncelle</button>
     </form>
     <div id="message"></div>
@@ -146,6 +209,11 @@ document.getElementById('resetForm').addEventListener('submit', async function(e
     msg.innerHTML = `<div class='error'>❌ Bağlantı hatası</div>`;
   }
 });
+// Mobilde inputa otomatik odaklan
+setTimeout(()=>{
+  const userInput = document.getElementById('username');
+  if(userInput) userInput.focus();
+}, 300);
 </script>
 </body>
 </html> 

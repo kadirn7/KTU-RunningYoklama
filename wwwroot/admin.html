@@ -3,105 +3,83 @@
 <head>
   <meta charset="utf-8">
   <title>Admin Paneli</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+    }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%);
-      margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%);
     }
     .ktu-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
+      justify-content: center;
       background: #1976d2;
       color: #fff;
-      padding: 14px 24px;
+      padding: 10px 0 8px 0;
       border-radius: 0 0 18px 18px;
       box-shadow: 0 2px 8px #0001;
-      margin-bottom: 32px;
-      justify-content: space-between;
       width: 100vw;
-      max-width: 100vw;
-      position: relative;
+      min-height: 54px;
     }
     .ktu-logo {
-      font-size: 2rem;
-      margin-right: 14px;
+      font-size: 1.7rem;
+      margin-right: 10px;
     }
     .ktu-title {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
       letter-spacing: 1px;
-    }
-    .container {
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 2px 16px #1976d211;
-      padding: 48px 32px;
-      text-align: center;
-      max-width: 950px;
-      margin: 0 auto 40px auto;
-    }
-    .main-title {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-bottom: 18px;
-      color: #222;
-    }
-    .main-message {
-      font-size: 1.1rem;
-      color: #333;
-      margin-bottom: 18px;
-    }
-    .btn, .set-btn, .load-btn, .export-btn, .logout-btn {
-      padding: 14px;
-      font-size: 16px;
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background .2s;
-      margin: 18px 0 0 0;
-      box-shadow: 0 2px 8px #1976d222;
-      letter-spacing: 0.5px;
-    }
-    .btn:hover, .set-btn:hover, .load-btn:hover, .export-btn:hover, .logout-btn:hover {
-      background: #125ea2;
     }
     .profile-bar {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      position: absolute;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
       background: #fff;
       color: #1976d2;
-      border-radius: 24px;
-      padding: 4px 10px 4px 10px;
-      box-shadow: 0 2px 8px #1976d222;
-      height: 52px;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -2px 8px #1976d222;
+      height: 56px;
+      padding: 0 18px;
+      z-index: 20;
+      width: 100vw;
+      max-width: 100vw;
+      font-size: 1.05rem;
+      display: none;
     }
+    .profile-bar.active { display: flex; }
     .profile-pic {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: linear-gradient(135deg, #1976d2 60%, #ffb300 100%);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
     }
     .profile-name {
       font-weight: bold;
       color: #1976d2;
-      font-size: 1.18rem;
+      font-size: 1.08rem;
       margin-right: 8px;
     }
     .logout-btn {
@@ -109,8 +87,8 @@
       color: #1976d2;
       border: 2px solid #1976d2;
       border-radius: 10px;
-      padding: 8px 18px;
-      font-size: 1.08em;
+      padding: 8px 14px;
+      font-size: 1em;
       font-weight: bold;
       cursor: pointer;
       margin-left: 0;
@@ -118,9 +96,44 @@
       box-shadow: none;
       transition: background .2s, color .2s;
     }
-    .logout-btn:hover {
+    .logout-btn:active {
       background: #1976d2;
       color: #fff;
+    }
+    .container {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #1976d211;
+      padding: 32px 8px 24px 8px;
+      text-align: center;
+      max-width: 98vw;
+      width: 100%;
+      margin: 80px auto 0 auto;
+      animation: fadein .7s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
+    }
+    .main-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #222;
+    }
+    .current-code {
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #1976d2;
+      font-weight: bold;
+    }
+    .expires-in {
+      font-size: 1.05rem;
+      color: #ff5e62;
+      text-align: center;
+      margin-bottom: 18px;
+      font-weight: bold;
     }
     .code-box-modern {
       display: flex;
@@ -139,13 +152,13 @@
       border: 2px solid #1976d2;
       border-radius: 8px 0 0 8px;
       outline: none;
-      width: 180px;
+      width: 120px;
       background: #fff;
       color: #1976d2;
       font-weight: bold;
     }
     .set-btn-modern {
-      padding: 14px 24px;
+      padding: 14px 18px;
       font-size: 1.15rem;
       background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
       color: #fff;
@@ -157,25 +170,16 @@
       letter-spacing: 0.5px;
       transition: background .2s;
     }
-    .set-btn-modern:hover {
+    .set-btn-modern:active {
       background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
     }
-    .current-code {
-      font-size: 1.18rem;
-      margin-bottom: 10px;
-      text-align: center;
-      color: #1976d2;
-      font-weight: bold;
-    }
-    .expires-in {
+    #codeMessage {
+      min-height: 24px;
+      margin-bottom: 8px;
       font-size: 1.05rem;
-      color: #ff5e62;
-      text-align: center;
-      margin-bottom: 18px;
-      font-weight: bold;
     }
     .attendance-section {
-      margin: 30px 0;
+      margin: 30px 0 0 0;
     }
     .date-selector-modern {
       display: flex;
@@ -183,6 +187,7 @@
       gap: 10px;
       margin-bottom: 20px;
       justify-content: center;
+      flex-wrap: wrap;
     }
     .date-input-modern {
       padding: 10px 14px;
@@ -195,7 +200,7 @@
       outline: none;
     }
     .load-btn-modern, .export-btn-modern {
-      padding: 12px 18px;
+      padding: 12px 14px;
       font-size: 1.08rem;
       background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
       color: #fff;
@@ -206,42 +211,43 @@
       box-shadow: 0 2px 8px #1976d222;
       letter-spacing: 0.5px;
       transition: background .2s;
+      margin-left: 0;
     }
-    .load-btn-modern:hover, .export-btn-modern:hover {
+    .load-btn-modern:active, .export-btn-modern:active {
       background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
     }
     .daily-list-modern {
       margin: 20px 0;
-      max-width: 600px;
+      max-width: 98vw;
       margin-left: auto;
       margin-right: auto;
     }
     .daily-header {
       background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
-      padding: 16px 0;
+      padding: 12px 0;
       border-radius: 10px;
       margin-bottom: 10px;
       font-weight: bold;
-      font-size: 1.13rem;
+      font-size: 1.05rem;
       color: #fff;
       letter-spacing: 0.5px;
       box-shadow: 0 2px 8px #1976d211;
     }
     .attendance-item {
       background: #f4f8fb;
-      padding: 14px 18px;
+      padding: 10px 12px;
       margin: 7px 0;
       border-radius: 8px;
       border-left: 5px solid #1976d2;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.08rem;
+      font-size: 1.01rem;
       box-shadow: 0 1px 4px #1976d211;
     }
     .attendance-time {
       color: #666;
-      font-size: 14px;
+      font-size: 13px;
     }
     .no-data {
       text-align: center;
@@ -251,7 +257,7 @@
     }
     @media (max-width: 800px) {
       .container {
-        padding: 24px 8px;
+        padding: 18px 2vw 14px 2vw;
         border-radius: 10px;
       }
       .daily-list-modern {
@@ -260,24 +266,35 @@
     }
     @media (max-width: 600px) {
       .ktu-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 12px;
+        padding: 8px 0 6px 0;
         border-radius: 0 0 12px 12px;
+        min-height: 44px;
       }
       .ktu-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       .profile-bar {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        height: 48px;
+        font-size: 0.98rem;
+        border-radius: 14px 14px 0 0;
+        padding: 0 6px;
       }
       .container {
-        padding: 12px 2px;
+        padding: 10px 1vw 8px 1vw;
         border-radius: 8px;
+        margin-top: 64px;
       }
+      .code-input-modern {
+        width: 90px;
+        font-size: 1rem;
+      }
+      .main-title {
+        font-size: 1.05rem;
+      }
+    }
+    @media (max-width: 400px) {
+      .main-title { font-size: 1rem; }
+      .container { padding: 6px 0 4px 0; }
     }
   </style>
 </head>
@@ -285,14 +302,14 @@
   <div class="ktu-header">
     <div class="ktu-logo">🏃‍♂️</div>
     <div class="ktu-title">KTÜ Run</div>
-    <div class="profile-bar" id="profileBar" style="display:none;">
-      <div class="profile-pic" id="profilePic">👤</div>
-      <span class="profile-name" id="profileName"></span>
-      <button class="logout-btn" onclick="logout()">Çıkış</button>
-    </div>
+  </div>
+  <div class="profile-bar" id="profileBar">
+    <div class="profile-pic" id="profilePic">👤</div>
+    <span class="profile-name" id="profileName"></span>
+    <button class="logout-btn" onclick="logout()">Çıkış</button>
   </div>
   <div class="container">
-    <h1>Admin Paneli</h1>
+    <div class="main-title">Admin Paneli</div>
     <div class="current-code" id="currentCode">Aktif Kod: <span id="activeCode">-</span></div>
     <div class="expires-in" id="expiresIn"></div>
     <div class="code-box-modern">
@@ -301,7 +318,7 @@
     </div>
     <div id="codeMessage"></div>
     <div class="attendance-section">
-      <h2>Günlük Yoklama Listeleri</h2>
+      <h2 style="font-size:1.1rem;margin-bottom:10px;">Günlük Yoklama Listeleri</h2>
       <div class="date-selector-modern">
         <input type="date" id="dateSelector" class="date-input-modern">
         <button class="load-btn-modern" onclick="loadAttendanceByDate()">Tarih Seç ve Görüntüle</button>
@@ -327,7 +344,7 @@ window.onload = async function() {
       }
       currentUser = user;
       document.getElementById('profileName').textContent = user.username;
-      document.getElementById('profileBar').style.display = 'flex';
+      document.getElementById('profileBar').classList.add('active');
       document.getElementById('profilePic').textContent = user.username.charAt(0).toUpperCase();
       await loadActiveCode();
       await loadAllAttendanceList();
@@ -452,36 +469,6 @@ async function loadAttendanceByDate() {
   } catch(e) {
     document.getElementById('attendanceList').innerHTML = '<p>Bağlantı hatası</p>';
   }
-}
-
-function displayAttendanceByDate(dailyAttendance, selectedDate) {
-  const listDiv = document.getElementById('attendanceList');
-  const date = new Date(selectedDate).toLocaleDateString('tr-TR', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  
-  if(!dailyAttendance || !dailyAttendance.attendances || dailyAttendance.attendances.length === 0) {
-    listDiv.innerHTML = `<div class="daily-header">${date}</div><div class="no-data">Bu gün için yoklama verisi yok</div>`;
-    return;
-  }
-  
-  let html = `<div class="daily-header">${date} (${dailyAttendance.totalCount} kişi)</div>`;
-  
-  dailyAttendance.attendances.forEach(attendance => {
-    const time = new Date(attendance.timestamp).toLocaleTimeString('tr-TR');
-    const fullName = attendance.fullName || attendance.username;
-    html += `
-      <div class="attendance-item">
-        <span><strong>${fullName}</strong></span>
-        <span class="attendance-time">${time}</span>
-      </div>
-    `;
-  });
-  
-  listDiv.innerHTML = html;
 }
 
 async function exportAttendanceList() {
