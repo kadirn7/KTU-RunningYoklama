@@ -495,7 +495,13 @@ async function exportAttendanceList() {
   try {
     const res = await fetch(url);
     if(res.ok) {
-      const attendances = await res.json();
+      let attendances = await res.json();
+      // Alfabeye göre sırala
+      attendances = attendances.sort((a, b) => {
+        const nameA = (a.fullName || a.username).toLocaleLowerCase('tr-TR');
+        const nameB = (b.fullName || b.username).toLocaleLowerCase('tr-TR');
+        return nameA.localeCompare(nameB, 'tr-TR');
+      });
       let csv = 'Ad Soyad,Tarih,Saat\n';
       attendances.forEach(att => {
         const fullName = att.fullName || att.username;

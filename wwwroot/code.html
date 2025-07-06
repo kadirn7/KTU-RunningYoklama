@@ -3,152 +3,219 @@
 <head>
   <meta charset="utf-8">
   <title>Yoklama</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      align-items: stretch;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%);
     }
     .ktu-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
+      justify-content: center;
       background: #1976d2;
       color: #fff;
-      padding: 14px 24px;
+      padding: 10px 0 8px 0;
       border-radius: 0 0 18px 18px;
       box-shadow: 0 2px 8px #0001;
-      margin-bottom: 32px;
-      justify-content: center;
       width: 100vw;
-      max-width: 100vw;
+      min-height: 54px;
     }
     .ktu-logo {
-      font-size: 2rem;
-      margin-right: 14px;
+      font-size: 1.7rem;
+      margin-right: 10px;
     }
     .ktu-title {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
       letter-spacing: 1px;
     }
     .main-box {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px #0002;
-      padding: 48px 32px;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px #1976d211;
+      padding: 32px 16px 24px 16px;
       text-align: center;
-      max-width: 400px;
-      margin: 0 auto;
+      max-width: 98vw;
+      width: 100%;
+      margin: 80px auto 0 auto;
+      animation: fadein .7s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
     }
     .main-title {
-      font-size: 2rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       color: #222;
     }
     .main-message {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: #333;
       margin-bottom: 18px;
     }
-    .btn, .submit-btn {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background .2s;
-      margin: 18px 0 0 0;
-      box-shadow: 0 2px 8px #1976d222;
-      letter-spacing: 0.5px;
-    }
-    .btn:hover, .submit-btn:hover {
-      background: #125ea2;
-    }
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     input[type=password] {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 16px 14px;
+      font-size: 1.15rem;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
       box-sizing: border-box;
+      background: #f1f8ff;
+      color: #1976d2;
+      font-weight: bold;
+      outline: none;
+      transition: border .2s;
+    }
+    input[type=password]:focus {
+      border: 2px solid #34c759;
+      background: #e3fcec;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.15rem;
+      background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px #1976d222;
+      letter-spacing: 0.5px;
+      transition: background .2s;
+    }
+    .submit-btn:active {
+      background: linear-gradient(90deg, #64b5f6 0%, #1976d2 100%);
     }
     .profile-bar {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      position: absolute;
-      top: 24px;
-      right: 24px;
+      justify-content: space-between;
+      gap: 8px;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      color: #1976d2;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -2px 8px #1976d222;
+      height: 56px;
+      padding: 0 18px;
+      z-index: 20;
+      width: 100vw;
+      max-width: 100vw;
+      font-size: 1.05rem;
+      display: none;
     }
+    .profile-bar.active { display: flex; }
     .profile-pic {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: #e0e0e0;
+      background: linear-gradient(135deg, #1976d2 60%, #ffb300 100%);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
+      font-weight: bold;
     }
     .profile-name {
       font-weight: bold;
+      color: #1976d2;
+      font-size: 1.08rem;
+      margin-right: 8px;
     }
-    .profile-update-btn {
+    .profile-update-btn, .logout-btn {
       background: #fff;
       color: #1976d2;
-      border: 1.5px solid #1976d2;
-      padding: 7px 16px;
-      border-radius: 7px;
-      font-weight: 600;
-      font-size: 15px;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 1em;
+      font-weight: bold;
       cursor: pointer;
+      margin-left: 0;
+      margin-right: 6px;
+      box-shadow: none;
       transition: background .2s, color .2s;
-      margin-left: 4px;
     }
-    .profile-update-btn:hover {
+    .profile-update-btn:active, .logout-btn:active {
       background: #1976d2;
       color: #fff;
     }
     .logout-btn {
+      border: 2px solid #f44336;
+      color: #f44336;
+      margin-right: 0;
+    }
+    .logout-btn:active {
       background: #f44336;
       color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background .2s;
     }
-    .logout-btn:hover {
-      background: #c62828;
+    #message {
+      margin-top: 10px;
+      min-height: 24px;
+      font-size: 1.05rem;
+    }
+    #alreadyAttended > div {
+      background:#e3fcec;
+      border:2px solid #34c759;
+      border-radius:12px;
+      padding:32px 8px;
+      max-width:98vw;
+      margin:0 auto;
+      box-shadow:0 2px 12px #0001;
     }
     @media (max-width: 600px) {
       .ktu-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 12px;
+        padding: 8px 0 6px 0;
         border-radius: 0 0 12px 12px;
+        min-height: 44px;
       }
       .ktu-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       .main-box {
-        padding: 24px 8px;
+        padding: 18px 2vw 14px 2vw;
         border-radius: 10px;
+        margin-top: 64px;
       }
+      .profile-bar {
+        height: 48px;
+        font-size: 0.98rem;
+        border-radius: 14px 14px 0 0;
+        padding: 0 6px;
+      }
+      #alreadyAttended > div {
+        padding: 18px 2vw;
+        border-radius: 8px;
+      }
+    }
+    @media (max-width: 400px) {
+      .main-title { font-size: 1.1rem; }
+      .main-box { padding: 10px 1vw 8px 1vw; }
     }
   </style>
 </head>
@@ -157,24 +224,24 @@
     <div class="ktu-logo">🏃‍♂️</div>
     <div class="ktu-title">KTÜ Run</div>
   </div>
-  <div class="profile-bar" id="profileBar" style="display:none;">
+  <div class="profile-bar" id="profileBar">
     <div class="profile-pic" id="profilePic" style="cursor:pointer;" onclick="window.location.href='profile.html'">👤</div>
     <span class="profile-name" id="profileName"></span>
-    <button class="profile-update-btn" onclick="window.location.href='profile.html'">Profilimi Güncelle</button>
+    <button class="profile-update-btn" onclick="window.location.href='profile.html'">Profil</button>
     <button class="logout-btn" onclick="logout()">Çıkış</button>
   </div>
   <div class="main-box">
     <div class="main-title">Yoklama Girişi</div>
     <div class="main-message">Yoklama kodunuzu girerek katılım sağlayabilirsiniz.</div>
-    <form id="attendanceForm">
+    <form id="attendanceForm" autocomplete="off">
       <div class="input-group">
-        <input id="code" type="password" placeholder="Kod" required autocomplete="off">
+        <input id="code" type="password" placeholder="Kod" required autocomplete="off" inputmode="text" pattern="[A-Za-z0-9]+" autofocus>
       </div>
       <button type="submit" class="submit-btn">Yoklama Ver</button>
     </form>
     <div id="message"></div>
     <div id="alreadyAttended" style="display:none;text-align:center;margin-top:30px;">
-      <div style="background:#e3fcec;border:2px solid #34c759;border-radius:12px;padding:32px 18px;max-width:350px;margin:0 auto;box-shadow:0 2px 12px #0001;">
+      <div>
         <div style="font-size:2.2rem;">🏃‍♂️🏃‍♀️🎉</div>
         <div style="font-size:1.3rem;font-weight:bold;color:#222;margin:12px 0 8px;">Yoklamaya Katıldınız!</div>
         <div style="color:#34c759;font-size:1.1rem;margin-bottom:10px;">Keyifli koşular dileriz!</div>
@@ -191,9 +258,8 @@ window.onload = async function() {
       const user = await res.json();
       currentUser = user;
       document.getElementById('profileName').textContent = user.fullName || user.username;
-      document.getElementById('profileBar').style.display = 'flex';
+      document.getElementById('profileBar').classList.add('active');
       document.getElementById('profilePic').textContent = (user.fullName || user.username).charAt(0).toUpperCase();
-
       // Katılım kontrolü
       const statusRes = await fetch('/api/attendance/status');
       if(statusRes.ok){
@@ -209,6 +275,11 @@ window.onload = async function() {
   } catch(e) {
     location.href = 'login.html';
   }
+  // Mobilde inputa otomatik odaklan
+  setTimeout(()=>{
+    const codeInput = document.getElementById('code');
+    if(codeInput) codeInput.focus();
+  }, 300);
 };
 
 async function logout() {
@@ -230,8 +301,8 @@ document.getElementById('attendanceForm').addEventListener('submit', async funct
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `code=${encodeURIComponent(code)}`
-  });
-  if(res.ok){
+    });
+    if(res.ok){
       messageDiv.innerHTML = '<div style="color:green;text-align:center;margin-top:10px;">✅ Yoklama başarılı!</div>';
       setTimeout(()=>location.href='success.html', 1200);
     } else {
