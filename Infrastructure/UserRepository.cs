@@ -61,6 +61,9 @@ public class UserRepository
         var email = adminSection["Email"];
         var password = adminSection["Password"];
 
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            throw new InvalidOperationException("Admin kullanıcı bilgileri eksik!");
+
         if (!await _db.Users.AnyAsync(u => u.Username == username))
         {
             var adminUser = new AttendanceApp.Models.User

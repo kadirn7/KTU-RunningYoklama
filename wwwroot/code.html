@@ -308,9 +308,7 @@ document.getElementById('attendanceForm').addEventListener('submit', async funct
     } else {
       const data = await res.json();
       if(data.message && data.message.includes('Zaten yoklamaya katıldınız')){
-        document.getElementById('attendanceForm').style.display = 'none';
-        messageDiv.innerHTML = '';
-        alreadyDiv.style.display = 'block';
+        location.href = 'success.html';
       } else {
         messageDiv.innerHTML = '<div class="error">❌ ' + (data.message || 'Kod yanlış') + '</div>';
       }
