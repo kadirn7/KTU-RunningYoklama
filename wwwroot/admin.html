@@ -194,15 +194,25 @@
       border: 2px solid #1976d2;
       border-radius: 8px;
       font-size: 1.08rem;
-      background: #f1f8ff !important;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f7e8ff 100%) !important;
       color: #1976d2;
       font-weight: bold;
       outline: none;
+      box-shadow: 0 1px 8px #1976d211;
+      transition: background 0.2s, border 0.2s;
     }
-    /* For Webkit browsers (Chrome, Safari, iOS) */
+    .date-input-modern:focus {
+      background: #e3fcec !important;
+      border: 2px solid #34c759;
+    }
+    /* Webkit (Chrome, Safari, iOS) */
     .date-input-modern::-webkit-input-placeholder { color: #1976d2; opacity: 1; }
     .date-input-modern::-webkit-calendar-picker-indicator { filter: invert(34%) sepia(99%) saturate(747%) hue-rotate(181deg) brightness(92%) contrast(92%); }
-    .date-input-modern:focus { background: #e3fcec !important; }
+    /* Firefox */
+    .date-input-modern::-moz-placeholder { color: #1976d2; opacity: 1; }
+    .date-input-modern:-moz-placeholder { color: #1976d2; opacity: 1; }
+    .date-input-modern::-ms-input-placeholder { color: #1976d2; opacity: 1; }
+    .date-input-modern::placeholder { color: #1976d2; opacity: 1; }
     .load-btn-modern, .export-btn-modern {
       padding: 12px 14px;
       font-size: 1.08rem;
